@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "gaspilab-app",
-    "slug": "gaspilab-app",
+    "name": "waste-it",
+    "slug": "waste-it",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
