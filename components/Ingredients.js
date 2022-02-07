@@ -4,13 +4,20 @@ import { Link } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import Inventory from '../assets/images/inventory-white.png'
 
-export default function Ingredients({category}) {
+export default function Ingredients({ category, handleIngredientPick, stepsCompleted, setStepsCompleted }) {
+
+  const [ingredientsPicked, setIngredientsPicked] = useState([])
+
+  const handleIngredientPress = (categoryName, booleanName, optionValue) => {
+    handleIngredientPick(categoryName, booleanName, optionValue)
+    setIngredientsPicked([...ingredientsPicked, optionValue])
+  }
+
   return (
     <View style={styles.container}>
 
       <Link to='/' style={[styles.goBackBtn, GlobalStyles.textCenter]}>
         <Image source={Inventory} style={styles.inventoryIcon}></Image>
-        {/* <Text style={[GlobalStyles.mediumText, GlobalStyles.whiteText]}>Inventaire</Text> */}
       </Link>
 
       <Text style={[
@@ -26,14 +33,27 @@ export default function Ingredients({category}) {
 
         {category.options.map(option => (
           <TouchableOpacity
+            onPress={() => handleIngredientPress(category.name, category.boolean.name, option.value)}
             key={option.value}
-            style={styles.ingredient}
+            style={ingredientsPicked.includes(option.value) ? [styles.ingredient, styles.picked] : styles.ingredient}
+            disabled={ingredientsPicked.includes(option.value)}
           >
               <Text style={[GlobalStyles.textBold]}>{option.value}</Text>
           </TouchableOpacity>
         ))}
 
       </View>
+
+      <Link
+        to='/'
+        onPress={() => setStepsCompleted([...stepsCompleted, category.id])}
+        style={styles.validate}
+      >
+        <Text style={[styles.validateBtn, GlobalStyles.textCenter, GlobalStyles.textBold]}>
+          {stepsCompleted.includes(category.id) ? "Modifier" : "J'ai que ça en stock"}
+        </Text>
+      </Link>
+
     </View>
   )
 }
@@ -72,6 +92,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 10,
-    backgroundColor: 'grey'
+  },
+  picked: {
+    backgroundColor: 'grey',
+    borderRadius: 10
+  },
+  validate: {
+    width: '50%',
+    margin: 'auto'
+  },
+  validateBtn: {
+    display: 'grid',
+    placeItems: 'center',
+    width: 200,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: 'hsl(242, 72%, 44%)',
+    color: 'white'
   },
 })

@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { Link } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
-import { formData } from '../data/formData'
+import { formData } from '../data'
 
-export default function Inventory({ setCategory }) {
+export default function Inventory({ setCategory, stepsCompleted }) {
   const [formItems, setFormItems] = useState(formData)
 
   return (
@@ -14,15 +14,20 @@ export default function Inventory({ setCategory }) {
 
       <View style={styles.inventoryList}>
 
-        {formItems.map(item => (
+        {formItems.map((item, index) => (
           <Link
             onPress={() => setCategory(item)}
             to={`/ingredients/${item.id}`}
             key={item.id}
-            style={[styles.inventoryItem]}
+            style={stepsCompleted.includes(item.id) ? [styles.inventoryItem, styles.completed] : styles.inventoryItem}
           >
             <Text
-              style={[
+              style={stepsCompleted.includes(item.id) ?
+                [styles.completed,
+                GlobalStyles.mediumText,
+                GlobalStyles.textBold,
+                GlobalStyles.textCenter]
+                : [
                 GlobalStyles.whiteText,
                 GlobalStyles.mediumText,
                 GlobalStyles.textBold,
@@ -36,13 +41,18 @@ export default function Inventory({ setCategory }) {
 
       </View>
 
+      {/* <TouchableOpacity style={styles.submit}>
+        <Text style={[styles.submitBtn, GlobalStyles.bigText]}>J'ai faim</Text>
+      </TouchableOpacity> */}
+
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   inventory: {
-    flex: 1
+    flex: 1,
+    height: '100%'
   },
   inventoryList: {
     width: '100%',
@@ -60,7 +70,7 @@ const styles = StyleSheet.create({
     placeItems: 'center',
     width: '48%',
     height: 150,
-    marginBottom: 20,
+    marginBottom: 5,
     padding: 10,
     backgroundColor: '#0C0A3E',
     borderRadius: 10,
@@ -73,4 +83,27 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 15,
   },
+  completed: {
+    // backgroundColor: 'hsl(158, 100%, 20%)' // jade
+    // backgroundColor: 'hsl(140, 52%, 25%' // emerald
+    backgroundColor: 'hsl(134, 64%, 29%)', // deep emerald
+    color: 'darkgrey'
+    // filter: 'grayscale(.3)'
+  },
+  // submit: {
+  //   width: '50%',
+  //   margin: 'auto'
+  // },
+  // submitBtn: {
+  //   display: 'grid',
+  //   placeItems: 'center',
+  //   width: 200,
+  //   height: 200,
+  //   // marginBottom: 30,
+  //   // paddingVertical: 10,
+  //   // paddingHorizontal: 20,
+  //   borderRadius: '50%',
+  //   backgroundColor: 'hsl(242, 72%, 44%)',
+  //   color: 'white'
+  // }
 })

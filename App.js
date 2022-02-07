@@ -1,20 +1,69 @@
 import React, { useState, useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { NativeRouter, Routes, Route, Link } from "react-router-native";
 // import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { GlobalStyles } from './styles/GlobalStyles';
+import { GlobalStyles } from './styles/GlobalStyles';
 import Head from './components/Head'
 import Consent from './components/Consent'
 // import Form from './components/Form'
 import Inventory from './components/Inventory';
 import Ingredients from './components/Ingredients';
+import Submit from './components/Submit';
 
 export default function App() {
   const [isMoreInfoHidden, setIsMoreInfoHidden] = useState(true)
   const [hasConsent, setHasConsent] = useState(false)
   const [category, setCategory] = useState(null)
+  const [stepsCompleted, setStepsCompleted] = useState([])
+  const [userIngredients, setUserIngredients] = useState(['sel', 'poivre', 'huile', 'vinaigre', 'beurre'])
+  const [result, setResult] = useState(null)
+
+  const [state, setState] = useState({
+    hasStarchyFoods: false,
+    hasMeat: false,
+    hasFish: false,
+    hasProteins: false,
+    hasVegetables: false,
+    hasDairy: false,
+    hasCondiments: false,
+    hasSpices: false,
+    hasHerbs: false,
+    starchyFoods: [],
+    meat: [],
+    fish: [],
+    proteins: [],
+    vegetables: [],
+    dairy: [],
+    condiments: [],
+    spices: [],
+    herbs: [],
+  })
+  console.log('state :', state);
+
+  const handleIngredientPick = (name, boolean, value) => {
+    // console.log('NAME :', name, 'BOOLEAN :', boolean, 'VALUE :', value);
+    setUserIngredients([...userIngredients, value.toLowerCase()])
+    dispatchToState(name, boolean, value)
+  }
+
+  const dispatchToState = (categoryName, booleanName, value) => {
+    const key = categoryName,
+          booleanKey = booleanName;
+
+    setState({
+      ...state,
+      [key]: [ ...state[key], value.toLowerCase() ],
+      [booleanKey]: true
+    })
+
+    console.log(
+      '***STATE UPDATE***',
+      key, 'set to:', [ ...state[key], value ],
+      booleanKey, 'set to:', true
+    );
+  }
 
   const getData = async () => {
     try {
@@ -33,8 +82,16 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    console.log('category :', category);
-  }, [category])
+    if (userIngredients[0]) console.log('userIngredients :', userIngredients);
+  }, [userIngredients])
+
+  useEffect(() => {
+    if (stepsCompleted[0]) console.log('stepsCompleted :', stepsCompleted);
+  }, [stepsCompleted])
+
+  useEffect(() => {
+    if (result !== null) console.log('result :', result);
+  }, [result])
 
   return (
     // <LinearGradient
@@ -57,13 +114,26 @@ export default function App() {
                     setIsMoreInfoHidden={setIsMoreInfoHidden}
                   />
                 }
-                <Inventory setCategory={setCategory} />
+                <Inventory
+                  setCategory={setCategory}
+                  stepsCompleted={stepsCompleted}
+                />
+                <Submit state={state} userIngredients={userIngredients} setResult={setResult} />
               </View>
               </>
             }
           >
           </Route>
-          <Route path='/ingredients/:id' element={<Ingredients category={category} />} />
+          <Route path='/ingredients/:id'
+            element={
+              <Ingredients
+                category={category}
+                handleIngredientPick={handleIngredientPick}
+                stepsCompleted={stepsCompleted}
+                setStepsCompleted={setStepsCompleted}
+              />
+            }
+          />
         </Routes>
 
         <StatusBar style="auto" />
@@ -95,7 +165,7 @@ const styles = StyleSheet.create({
     height: '100vh'
   },
   main: {
-    flex: 15,
+    // flex: 15,
     // flex: 8,
     width: '100%',
     // height: '50%',
