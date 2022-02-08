@@ -15,8 +15,8 @@ export default function Head() {
 
 const styles = StyleSheet.create({
   head: {
-    flex: 1,
     width: '100%',
+    height: 100,
     alignItems: 'center',
     justifyContent: 'center',
   },

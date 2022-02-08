@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import { Link } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import { formData } from '../data'
@@ -41,23 +41,20 @@ export default function Inventory({ setCategory, stepsCompleted }) {
 
       </View>
 
-      {/* <TouchableOpacity style={styles.submit}>
-        <Text style={[styles.submitBtn, GlobalStyles.bigText]}>J'ai faim</Text>
-      </TouchableOpacity> */}
-
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   inventory: {
-    flex: 1,
+    flex: 5,
     height: '100%'
+    // height: '100vh'
   },
   inventoryList: {
     width: '100%',
     height: '100%',
-    // flex: 5,
+    flex: 5,
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
@@ -66,11 +63,11 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   inventoryItem: {
-    display: 'grid',
-    placeItems: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     width: '48%',
     height: 150,
-    marginBottom: 5,
+    marginBottom: 15,
     padding: 10,
     backgroundColor: '#0C0A3E',
     borderRadius: 10,
@@ -90,20 +87,4 @@ const styles = StyleSheet.create({
     color: 'darkgrey'
     // filter: 'grayscale(.3)'
   },
-  // submit: {
-  //   width: '50%',
-  //   margin: 'auto'
-  // },
-  // submitBtn: {
-  //   display: 'grid',
-  //   placeItems: 'center',
-  //   width: 200,
-  //   height: 200,
-  //   // marginBottom: 30,
-  //   // paddingVertical: 10,
-  //   // paddingHorizontal: 20,
-  //   borderRadius: '50%',
-  //   backgroundColor: 'hsl(242, 72%, 44%)',
-  //   color: 'white'
-  // }
 })

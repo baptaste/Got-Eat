@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native'
 export const GlobalStyles = StyleSheet.create({
   text: {
     color: 'black',
-    // textAlign: 'center'
   },
   whiteText: {
     color: 'white'
@@ -34,10 +33,4 @@ export const GlobalStyles = StyleSheet.create({
   textBold: {
     fontWeight: 'bold'
   },
-  // boxShadow: {
-  //   shadowColor: '#2b2b2b',
-  //   shadowOffset: {width: 0, height: 1},
-  //   shadowOpacity: 0.2,
-  //   elevation: 5
-  // }
 })

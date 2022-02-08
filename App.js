@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { NativeRouter, Routes, Route, Link } from "react-router-native";
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { NativeRouter, Routes, Route, Link, useNavigate } from "react-router-native";
 // import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GlobalStyles } from './styles/GlobalStyles';
@@ -11,6 +11,7 @@ import Consent from './components/Consent'
 import Inventory from './components/Inventory';
 import Ingredients from './components/Ingredients';
 import Submit from './components/Submit';
+import Result from './components/Result';
 
 export default function App() {
   const [isMoreInfoHidden, setIsMoreInfoHidden] = useState(true)
@@ -18,6 +19,7 @@ export default function App() {
   const [category, setCategory] = useState(null)
   const [stepsCompleted, setStepsCompleted] = useState([])
   const [userIngredients, setUserIngredients] = useState(['sel', 'poivre', 'huile', 'vinaigre', 'beurre'])
+  const [ingredientsPicked, setIngredientsPicked] = useState([])
   const [result, setResult] = useState(null)
 
   const [state, setState] = useState({
@@ -43,7 +45,6 @@ export default function App() {
   console.log('state :', state);
 
   const handleIngredientPick = (name, boolean, value) => {
-    // console.log('NAME :', name, 'BOOLEAN :', boolean, 'VALUE :', value);
     setUserIngredients([...userIngredients, value.toLowerCase()])
     dispatchToState(name, boolean, value)
   }
@@ -81,17 +82,14 @@ export default function App() {
     })
   }, [])
 
-  useEffect(() => {
-    if (userIngredients[0]) console.log('userIngredients :', userIngredients);
-  }, [userIngredients])
+  // useEffect(() => {
+  //   if (userIngredients.length > 5) console.log('userIngredients :', userIngredients);
+  // }, [userIngredients])
 
-  useEffect(() => {
-    if (stepsCompleted[0]) console.log('stepsCompleted :', stepsCompleted);
-  }, [stepsCompleted])
+  // useEffect(() => {
+  //   if (stepsCompleted[0]) console.log('stepsCompleted :', stepsCompleted);
+  // }, [stepsCompleted])
 
-  useEffect(() => {
-    if (result !== null) console.log('result :', result);
-  }, [result])
 
   return (
     // <LinearGradient
@@ -99,8 +97,7 @@ export default function App() {
     //     style={styles.background}
     //   >
     <NativeRouter>
-      <View style={styles.container}>
-
+      <ScrollView contentContainerStyle={styles.container}>
         <Routes>
           <Route
             exact path='/'
@@ -122,22 +119,25 @@ export default function App() {
               </View>
               </>
             }
-          >
-          </Route>
+          />
           <Route path='/ingredients/:id'
             element={
               <Ingredients
                 category={category}
                 handleIngredientPick={handleIngredientPick}
+                ingredientsPicked={ingredientsPicked}
+                setIngredientsPicked={setIngredientsPicked}
                 stepsCompleted={stepsCompleted}
                 setStepsCompleted={setStepsCompleted}
               />
             }
           />
+          <Route path='/result' element={<Result result={result} />} />
         </Routes>
 
         <StatusBar style="auto" />
-      </View>
+
+      </ScrollView>
     </NativeRouter>
     // </LinearGradient>
   );
@@ -146,8 +146,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    // height: '100vh',
-    flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -156,20 +154,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     color: 'black'
   },
-  background: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: '100vh'
-  },
+  // background: {
+  //   position: 'absolute',
+  //   top: 0,
+  //   left: 0,
+  //   right: 0,
+  //   bottom: 0,
+  //   height: '100vh'
+  // },
   main: {
-    // flex: 15,
-    // flex: 8,
     width: '100%',
-    // height: '50%',
-    // padding: 20,
+    flex: 1,
     margin: 10,
   },
 });
