@@ -1,32 +1,37 @@
-import React, { useState } from 'react'
-import axios from 'axios'
+import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import { Link } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 
-export default function Result({ result }) {
-  console.log('result :', result);
+export default function Result({ result, colorScheme }) {
+  console.log('RESULT // ', result);
   return (
     <View style={styles.result}>
 
-      <Text style={[GlobalStyles.bigText, GlobalStyles.textCenter, styles.message]}>{result.message}</Text>
+      <Text style={GlobalStyles.hugeText}>
+        {result.status === 'Success' && result.recipes ? 'Recettes' : 'Recette'}
+      </Text>
+      <Text style={[GlobalStyles.bigText, styles.message]}>{result.message}</Text>
 
       <View style={styles.recipeList}>
 
-        {result.recipes.map(recipe => (
-          <View key={recipe.id} style={styles.recipeItem}>
+        {result.recipes && result.recipes.map(recipe => (
+          <View key={recipe.id}
+            style={[styles.recipeItem,
+            { backgroundColor: '#171780', shadowColor: colorScheme === 'dark' ? 'turquoise' : '#000' }
+            ]}>
 
             <View style={styles.recipeHead}>
-              <Text style={([styles.recipeTitle, GlobalStyles.bigText, GlobalStyles.textBold])}>
+              <Text style={([styles.recipeTitle, GlobalStyles.veryBigText, GlobalStyles.textBold])}>
                 {recipe.name}
               </Text>
             </View>
 
             <View style={styles.ingredients}>
-              {recipe.ingredients.map(text => (
-                <View style={styles.ingredientItem}>
+              {recipe.ingredients.map((text, index) => (
+                <View  key={text + index} style={styles.ingredientItem}>
 
-                  <Text key={text} style={[styles.ingredientText, GlobalStyles.textBold]}>
+                  <Text key={text} style={[styles.ingredientText, GlobalStyles.textBold, GlobalStyles.whiteText]}>
                     {text}
                   </Text>
                 </View>
@@ -42,7 +47,8 @@ export default function Result({ result }) {
 
 const styles = StyleSheet.create({
   result: {
-    flex: 1
+    flex: 1,
+    // marginTop: 60
   },
   message: {
     marginVertical: 30
@@ -57,8 +63,8 @@ const styles = StyleSheet.create({
     width: '90%',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 30,
     borderRadius: 10,
-    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 5,
@@ -73,12 +79,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   recipeTitle: {
-    width: '85%',
-    paddingVertical: 10,
-    color: 'hsl(242, 72%, 44%)',
+    paddingVertical: 30,
+    // color: 'hsl(242, 72%, 44%)',
+    color: 'white'
   },
   ingredients: {
-    height: 'fit-content',
     flexDirection: 'row',
     flexWrap: 'wrap',
     padding: 20,
@@ -86,7 +91,7 @@ const styles = StyleSheet.create({
   },
   ingredientItem: {
     width: '45%',
-    height: 47,
+    // height: 57,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

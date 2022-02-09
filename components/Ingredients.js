@@ -2,31 +2,51 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import { Link } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
-import Inventory from '../assets/images/inventory-white.png'
 
 export default function Ingredients({
-  category, handleIngredientPick, stepsCompleted, setStepsCompleted, ingredientsPicked, setIngredientsPicked
+  category,
+  handleIngredientPick,
+  stepsCompleted,
+  setStepsCompleted,
+  ingredientsPicked,
+  setIngredientsPicked,
+  colorScheme
 }) {
+
+  const [isPicking, setIsPicking] = useState(false)
 
   const handleIngredientPress = (categoryName, booleanName, optionValue) => {
     handleIngredientPick(categoryName, booleanName, optionValue)
     setIngredientsPicked([...ingredientsPicked, optionValue])
+
+    const ingredientsData = category.options.map(option => option.value)
+
+    const isIngredientIncluded = ingredientsData.filter(ingredient => ingredientsPicked.includes(ingredient))
+    // console.log('isIngredientIncluded :', isIngredientIncluded);
+
+    if (isIngredientIncluded) setIsPicking(true)
   }
 
-  return (
-    <View style={styles.container}>
 
-      <View style={[GlobalStyles.row, styles.pickerHead]}>
-        <Link to='/' style={[styles.goBackBtn, GlobalStyles.textCenter]}>
-          <Image
-            source={Inventory}
-            style={{width: 40, height: 40, alignSelf: 'flex-end'}}
-          />
-        </Link>
-        <Text style={[GlobalStyles.hugeText, GlobalStyles.textCenter, styles.pageTitle]}>
-          {category.question}
+
+  return (
+    <View style={{ height: '100%' }}>
+
+      <Text style={[GlobalStyles.hugeText, GlobalStyles.textCenter, styles.pageTitle]}>
+        {category.question}
+      </Text>
+
+      {isPicking &&
+        <Link
+        to='/'
+        onPress={() => setStepsCompleted([...stepsCompleted, category.id])}
+        style={styles.validate}
+      >
+        <Text style={[styles.validateBtn, GlobalStyles.textCenter, GlobalStyles.textBold]}>
+          {stepsCompleted.includes(category.id) ? "Modifier" : `J'ai que ça en ${category.label.toLowerCase()}`}
         </Text>
-      </View>
+      </Link>
+      }
 
       <View style={styles.IngredientsList}>
 
@@ -34,80 +54,80 @@ export default function Ingredients({
           <TouchableOpacity
             onPress={() => handleIngredientPress(category.name, category.boolean.name, option.value)}
             key={option.value}
-            style={ingredientsPicked.includes(option.value) ? [styles.ingredient, styles.picked] : styles.ingredient}
+            style={styles.ingredient}
             disabled={ingredientsPicked.includes(option.value)}
           >
               <Image
                 source={option.image}
                 accessibilityLabel={option.value}
-                style={{width: 40, height: 40}}
-                tintColor={ingredientsPicked.includes(option.value) && '#251fc1'}
+                style={{width: 40, height: 40, marginBottom: 10}}
+                tintColor={colorScheme === 'dark' ?
+                  ingredientsPicked.includes(option.value) ? 'hsl(134, 64%, 29%)' : 'white' // dark mode
+                  : ingredientsPicked.includes(option.value) ? '#251fc1' : 'black' // light mode
+              }
               />
-              <Text style={ingredientsPicked.includes(option.value) ?
-                [GlobalStyles.mediumText, GlobalStyles.textBold, GlobalStyles.textCenter, styles.picked] : [GlobalStyles.mediumText, GlobalStyles.textBold, GlobalStyles.textCenter]}>
+
+              <Text style={
+                ingredientsPicked.includes(option.value) ?
+                [GlobalStyles.mediumText, GlobalStyles.textBold, GlobalStyles.textCenter, styles.picked,
+                  { color: colorScheme === 'dark' ? 'hsl(134, 64%, 29%)' : '#251fc1' }]
+                : [GlobalStyles.mediumText, GlobalStyles.textBold, GlobalStyles.textCenter]
+              }
+              >
                 {option.value}
               </Text>
+
           </TouchableOpacity>
         ))}
 
       </View>
-
-      <Link
-        to='/'
-        onPress={() => setStepsCompleted([...stepsCompleted, category.id])}
-        style={styles.validate}
-      >
-        <Text style={[styles.validateBtn, GlobalStyles.textCenter, GlobalStyles.textBold]}>
-          {stepsCompleted.includes(category.id) ? "Modifier" : "J'ai que ça en stock"}
-        </Text>
-      </Link>
 
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 5,
-    width: '100%',
-    height: '100%',
-  },
-  pickerHead: {
-    justifyContent: 'center'
-  },
+  // ingredients: {
+  //   flex: 5,
+  //   justifyContent: 'space-between',
+  //   // flex: 5,
+  //   // width: '100%',
+  //   // height: 700,
+  //   backgroundColor: 'salmon'
+  // },
+  // pickerHead: {
+  //   width: '100%',
+  // },
   pageTitle: {
-    width: '50%',
-    marginTop: 50,
+    width: '100%',
     marginBottom: 30,
-  },
-  goBackBtn: {
-    position: 'relative',
-    top: 50,
-    left: -50
+    textAlign: 'left',
+
   },
   IngredientsList: {
+    flex: 1,
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16
+    // paddingHorizontal: 16
   },
   ingredient: {
-    width: '30%',
-    height: 65,
+    width: '33%',
+    // height: 75,
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 32,
-  },
-  picked: {
-    color: '#251fc1'
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    // backgroundColor: '#7B7BCE',
+    // borderRadius: 10
   },
   validate: {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 50
   },
   validateBtn: {
     width: 200,

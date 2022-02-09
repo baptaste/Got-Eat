@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, ScrollView, SafeAreaView, Appearance } from 'react-native';
 import { NativeRouter, Routes, Route, Link, useNavigate } from "react-router-native";
 // import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,15 +12,40 @@ import Inventory from './components/Inventory';
 import Ingredients from './components/Ingredients';
 import Submit from './components/Submit';
 import Result from './components/Result';
+import Nav from './components/Nav';
 
 export default function App() {
+  const colorScheme = Appearance.getColorScheme()
+
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@storage_Key : user consent rules')
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (error) {
+      console.log('Error', error);
+    }
+  }
+
+  useEffect(() => {
+    console.log('*** App init ***')
+    if (colorScheme === 'dark') {
+      console.log('user uses dark mode')
+    } else console.log('user uses light mode')
+
+    getData().then((res) => {
+      console.log('user consent rules')
+      setHasConsent(res)
+    })
+  }, [])
+
   const [isMoreInfoHidden, setIsMoreInfoHidden] = useState(true)
   const [hasConsent, setHasConsent] = useState(false)
   const [category, setCategory] = useState(null)
   const [stepsCompleted, setStepsCompleted] = useState([])
-  const [userIngredients, setUserIngredients] = useState(['sel', 'poivre', 'huile', 'vinaigre', 'beurre'])
+  const [userIngredients, setUserIngredients] = useState(['sel', 'poivre', 'huile', 'vinaigre'])
   const [ingredientsPicked, setIngredientsPicked] = useState([])
   const [result, setResult] = useState(null)
+  const [isStateClear, setIsStateClear] = useState(false)
 
   const [state, setState] = useState({
     hasStarchyFoods: false,
@@ -42,7 +67,7 @@ export default function App() {
     spices: [],
     herbs: [],
   })
-  console.log('state :', state);
+  // console.log('state :', state);
 
   const handleIngredientPick = (name, boolean, value) => {
     setUserIngredients([...userIngredients, value.toLowerCase()])
@@ -66,30 +91,36 @@ export default function App() {
     );
   }
 
-  const getData = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem('@storage_Key : user consent rules')
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (error) {
-      console.log('Error', error);
-    }
+  const clearState = () => {
+    setCategory(null)
+    setStepsCompleted([])
+    setUserIngredients(['sel', 'poivre', 'huile', 'vinaigre'])
+    setIngredientsPicked([])
+    setResult(null)
+    setState({
+      hasStarchyFoods: false,
+      hasMeat: false,
+      hasFish: false,
+      hasProteins: false,
+      hasVegetables: false,
+      hasDairy: false,
+      hasCondiments: false,
+      hasSpices: false,
+      hasHerbs: false,
+      starchyFoods: [],
+      meat: [],
+      fish: [],
+      proteins: [],
+      vegetables: [],
+      dairy: [],
+      condiments: [],
+      spices: [],
+      herbs: [],
+    })
+    setIsStateClear(true)
   }
 
-  useEffect(() => {
-    getData().then((res) => {
-      console.log('user consent rules')
-      setHasConsent(res)
-    })
-  }, [])
-
-  // useEffect(() => {
-  //   if (userIngredients.length > 5) console.log('userIngredients :', userIngredients);
-  // }, [userIngredients])
-
-  // useEffect(() => {
-  //   if (stepsCompleted[0]) console.log('stepsCompleted :', stepsCompleted);
-  // }, [stepsCompleted])
-
+  isStateClear && console.log('*** state cleared ***', state);
 
   return (
     // <LinearGradient
@@ -97,14 +128,16 @@ export default function App() {
     //     style={styles.background}
     //   >
     <NativeRouter>
+
       <ScrollView contentContainerStyle={styles.container}>
-        <Routes>
-          <Route
-            exact path='/'
-            element={
-              <>
-              <Head />
-              <View style={styles.main}>
+
+        <View style={styles.main}>
+          <Routes>
+            <Route
+              exact path='/'
+              element={
+                <>
+                {/* <Head /> */}
                 {!hasConsent &&
                   <Consent
                     isMoreInfoHidden={isMoreInfoHidden}
@@ -114,30 +147,40 @@ export default function App() {
                 <Inventory
                   setCategory={setCategory}
                   stepsCompleted={stepsCompleted}
+                  colorScheme={colorScheme}
                 />
-                <Submit state={state} userIngredients={userIngredients} setResult={setResult} />
-              </View>
-              </>
-            }
-          />
-          <Route path='/ingredients/:id'
-            element={
-              <Ingredients
-                category={category}
-                handleIngredientPick={handleIngredientPick}
-                ingredientsPicked={ingredientsPicked}
-                setIngredientsPicked={setIngredientsPicked}
-                stepsCompleted={stepsCompleted}
-                setStepsCompleted={setStepsCompleted}
-              />
-            }
-          />
-          <Route path='/result' element={<Result result={result} />} />
-        </Routes>
+                </>
+              }
+            />
+            <Route path='/ingredients/:id'
+              element={
+                <Ingredients
+                  category={category}
+                  handleIngredientPick={handleIngredientPick}
+                  ingredientsPicked={ingredientsPicked}
+                  setIngredientsPicked={setIngredientsPicked}
+                  stepsCompleted={stepsCompleted}
+                  setStepsCompleted={setStepsCompleted}
+                  colorScheme={colorScheme}
+                />
+              }
+            />
+            <Route path='/result' element={<Result result={result} colorScheme={colorScheme} />} />
+          </Routes>
+
+        </View>
 
         <StatusBar style="auto" />
-
       </ScrollView>
+
+      {userIngredients.length > 7 && result === null &&
+        <Submit state={state} userIngredients={userIngredients} setResult={setResult} />
+      }
+
+      <View style={styles.footer}>
+        <Nav colorScheme={colorScheme} clearState={clearState} />
+      </View>
+
     </NativeRouter>
     // </LinearGradient>
   );
@@ -145,14 +188,18 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    // flex: 2,
+    // width: '100%',
+    // height: '100%',
+    // flexDirection: 'column',
+    // alignItems: 'center',
+    // justifyContent: 'space-between',
     padding: 10,
-    marginBottom: 50,
+    // marginTop: 40,
+    // marginBottom: 50,
     backgroundColor: 'white',
-    color: 'black'
+    color: 'black',
+    zIndex: -1
   },
   // background: {
   //   position: 'absolute',
@@ -165,6 +212,10 @@ const styles = StyleSheet.create({
   main: {
     width: '100%',
     flex: 1,
-    margin: 10,
+    marginTop: 40,
   },
+  footer: {
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  }
 });

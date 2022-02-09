@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import { Link, useNavigate } from 'react-router-native'
+import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import { useNavigate } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 
 export default function Submit({ state, userIngredients, setResult }) {
@@ -14,10 +14,12 @@ export default function Submit({ state, userIngredients, setResult }) {
 
     try {
       const res = await axios.post(
-        'http://localhost:3000/search/',
+        // 'http://10.0.2.2:3000/search/',
+        'http://192.168.1.33:3000/search/',
         userData,
         {
           headers: {
+            "Content-Type": "application/json",
             Accept: 'application/json'
           },
         }
@@ -35,7 +37,7 @@ export default function Submit({ state, userIngredients, setResult }) {
   }
 
   return (
-    <TouchableOpacity onPress={handleSubmit} style={styles.submit}>
+    <TouchableOpacity onPress={handleSubmit} style={[styles.submit, { shadowColor: 'turquoise' }]}>
       <Text style={[styles.submitBtn, GlobalStyles.bigText]}>J'ai faim</Text>
     </TouchableOpacity>
   )
@@ -43,15 +45,25 @@ export default function Submit({ state, userIngredients, setResult }) {
 
 const styles = StyleSheet.create({
   submit: {
-    width: '100%',
+    position: 'absolute',
+    bottom: 80,
+    left: '20%',
+    width: '60%',
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10,
-    marginTop: 50,
+    borderRadius: 18,
     backgroundColor: 'hsl(242, 72%, 44%)',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.51,
+    shadowRadius: 10,
+    elevation: 15,
+    zIndex: 1000,
   },
   submitBtn: {
-    color: 'white'
+    color: 'white',
   }
 })

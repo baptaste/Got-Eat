@@ -11,6 +11,10 @@ export const GlobalStyles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold'
   },
+  veryBigText: {
+    fontSize: 24,
+    fontWeight: 'bold'
+  },
   bigText: {
     fontSize: 20,
     fontWeight: 'bold'
@@ -33,4 +37,10 @@ export const GlobalStyles = StyleSheet.create({
   textBold: {
     fontWeight: 'bold'
   },
+  mainBg: {
+    backgroundColor: '#0C0A3E'
+  },
+  mainColor: {
+   color: '#0C0A3E',
+  }
 })
