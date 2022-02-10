@@ -1,24 +1,45 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
-import { Link } from 'react-router-native'
+import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import { formData } from '../data'
+import GoBack from '../components/GoBack'
 import Checked from '../assets/icons/check.png'
 
-export default function Inventory({ setCategory, stepsCompleted, colorScheme }) {
+export default function Inventory({ setCategory, stepsCompleted, colorScheme, clearState, setCurrentLocation, userIngredients }) {
   const [formItems, setFormItems] = useState(formData)
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    setCurrentLocation(pathname)
+  }, [])
 
   return (
     <View style={styles.inventory}>
 
-      <Text style={[GlobalStyles.text, GlobalStyles.hugeText, GlobalStyles.textCenter]}>Mon inventaire</Text>
+      <GoBack pathname={pathname} />
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={[GlobalStyles.text, GlobalStyles.hugeText, GlobalStyles.textCenter]}>Mon inventaire</Text>
+
+        {userIngredients.length >= 3 &&
+          <TouchableOpacity onPress={clearState} style={{ alignItems: 'center', marginRight: 5 }}>
+            <Image
+              source={require('../assets/icons/undo-arrow.png')}
+              style={{ width: 25, height: 25, tintColor: colorScheme === 'dark' ? 'white' : 'black' }}
+            />
+            <Text>Effacer</Text>
+        </TouchableOpacity>
+        }
+      </View>
+
 
       <View style={styles.inventoryList}>
 
         {formItems.map((item, index) => (
           <Link
             onPress={() => setCategory(item)}
-            to={`/ingredients/${item.id}`}
+            to='/inventory/ingredients'
             key={item.id}
             style={
               stepsCompleted.includes(item.id) ?
@@ -107,7 +128,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
-    tintColor: 'hsl(134, 64%, 29%)',
+    // tintColor: 'hsl(134, 64%, 29%)',
+    tintColor: 'hsl(242, 72%, 44%)',
     zIndex: -1
   }
 })

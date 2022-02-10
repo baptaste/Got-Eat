@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, ScrollView, SafeAreaView, Appearance } from 'react-native';
-import { NativeRouter, Routes, Route, Link, useNavigate } from "react-router-native";
+// import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View, ScrollView, Appearance, StatusBar, Dimensions } from 'react-native';
+import { NativeRouter, Routes, Route } from "react-router-native";
 // import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GlobalStyles } from './styles/GlobalStyles';
@@ -13,6 +13,7 @@ import Ingredients from './components/Ingredients';
 import Submit from './components/Submit';
 import Result from './components/Result';
 import Nav from './components/Nav';
+import Home from './components/Home';
 
 export default function App() {
   const colorScheme = Appearance.getColorScheme()
@@ -38,14 +39,18 @@ export default function App() {
     })
   }, [])
 
+  // const windowWidth = Dimensions.get('window').width
+  const windowHeight = Dimensions.get('window').height
+
   const [isMoreInfoHidden, setIsMoreInfoHidden] = useState(true)
   const [hasConsent, setHasConsent] = useState(false)
   const [category, setCategory] = useState(null)
   const [stepsCompleted, setStepsCompleted] = useState([])
-  const [userIngredients, setUserIngredients] = useState(['sel', 'poivre', 'huile', 'vinaigre'])
+  const [userIngredients, setUserIngredients] = useState(['sel', 'poivre'])
   const [ingredientsPicked, setIngredientsPicked] = useState([])
   const [result, setResult] = useState(null)
   const [isStateClear, setIsStateClear] = useState(false)
+  const [currentLocation, setCurrentLocation] = useState('/')
 
   const [state, setState] = useState({
     hasStarchyFoods: false,
@@ -92,9 +97,10 @@ export default function App() {
   }
 
   const clearState = () => {
+    setCurrentLocation('/')
     setCategory(null)
     setStepsCompleted([])
-    setUserIngredients(['sel', 'poivre', 'huile', 'vinaigre'])
+    setUserIngredients(['sel', 'poivre'])
     setIngredientsPicked([])
     setResult(null)
     setState({
@@ -120,7 +126,13 @@ export default function App() {
     setIsStateClear(true)
   }
 
-  isStateClear && console.log('*** state cleared ***', state);
+  isStateClear && console.log('*** state cleared ***', state)
+
+  useEffect(() => {
+    if (userIngredients.length > 2) console.log('userIngredients :', userIngredients)
+  }, [userIngredients])
+
+  console.log('current location :', currentLocation);
 
   return (
     // <LinearGradient
@@ -129,30 +141,38 @@ export default function App() {
     //   >
     <NativeRouter>
 
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={[styles.container]}>
 
         <View style={styles.main}>
+
           <Routes>
-            <Route
-              exact path='/'
+            <Route exact path='/'
               element={
                 <>
-                {/* <Head /> */}
-                {!hasConsent &&
-                  <Consent
-                    isMoreInfoHidden={isMoreInfoHidden}
-                    setIsMoreInfoHidden={setIsMoreInfoHidden}
-                  />
-                }
-                <Inventory
-                  setCategory={setCategory}
-                  stepsCompleted={stepsCompleted}
-                  colorScheme={colorScheme}
-                />
+                  {!hasConsent &&
+                    <Consent
+                      isMoreInfoHidden={isMoreInfoHidden}
+                      setIsMoreInfoHidden={setIsMoreInfoHidden}
+                    />
+                  }
+                  <Home windowHeight={windowHeight} colorScheme={colorScheme} />
                 </>
               }
             />
-            <Route path='/ingredients/:id'
+            <Route exact path='/inventory'
+              element={
+                hasConsent &&
+                  <Inventory
+                    setCurrentLocation={setCurrentLocation}
+                    setCategory={setCategory}
+                    stepsCompleted={stepsCompleted}
+                    colorScheme={colorScheme}
+                    clearState={clearState}
+                    userIngredients={userIngredients}
+                  />
+              }
+            />
+            <Route exact path='/inventory/ingredients'
               element={
                 <Ingredients
                   category={category}
@@ -162,10 +182,16 @@ export default function App() {
                   stepsCompleted={stepsCompleted}
                   setStepsCompleted={setStepsCompleted}
                   colorScheme={colorScheme}
+                  windowHeight={windowHeight}
+                  setCurrentLocation={setCurrentLocation}
                 />
               }
             />
-            <Route path='/result' element={<Result result={result} colorScheme={colorScheme} />} />
+            <Route exact path='/result'
+              element={
+                <Result result={result} colorScheme={colorScheme} setCurrentLocation={setCurrentLocation} />
+              }
+            />
           </Routes>
 
         </View>
@@ -173,12 +199,13 @@ export default function App() {
         <StatusBar style="auto" />
       </ScrollView>
 
-      {userIngredients.length > 7 && result === null &&
+
+      {userIngredients.length > 5 && result === null &&
         <Submit state={state} userIngredients={userIngredients} setResult={setResult} />
       }
 
       <View style={styles.footer}>
-        <Nav colorScheme={colorScheme} clearState={clearState} />
+        <Nav colorScheme={colorScheme} clearState={clearState} result={result} currentLocation={currentLocation} />
       </View>
 
     </NativeRouter>
@@ -188,16 +215,16 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 2,
+    // flex: 1,
     // width: '100%',
     // height: '100%',
     // flexDirection: 'column',
     // alignItems: 'center',
     // justifyContent: 'space-between',
-    padding: 10,
-    // marginTop: 40,
-    // marginBottom: 50,
-    backgroundColor: 'white',
+    // paddingTop: StatusBar.currentHeight ,
+    paddingHorizontal: 10,
+    // backgroundColor: 'white',
+    // backgroundColor: 'green',
     color: 'black',
     zIndex: -1
   },
@@ -211,11 +238,14 @@ const styles = StyleSheet.create({
   // },
   main: {
     width: '100%',
-    flex: 1,
+    height: '100%',
+    // flex: 1,
     marginTop: 40,
+    // backgroundColor: 'green'
+
   },
   footer: {
     alignItems: 'center',
     backgroundColor: 'transparent',
-  }
+  },
 });

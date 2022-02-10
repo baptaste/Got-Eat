@@ -1,46 +1,75 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import { Link } from 'react-router-native'
+import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
+import GoBack from '../components/GoBack'
 
-export default function Result({ result, colorScheme }) {
-  console.log('RESULT // ', result);
+export default function Result({ result, colorScheme, setCurrentLocation }) {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    setCurrentLocation(pathname)
+  }, [])
+
   return (
     <View style={styles.result}>
 
+      <GoBack />
+
       <Text style={GlobalStyles.hugeText}>
-        {result.status === 'Success' && result.recipes ? 'Recettes' : 'Recette'}
+        Recettes
       </Text>
-      <Text style={[GlobalStyles.bigText, styles.message]}>{result.message}</Text>
 
-      <View style={styles.recipeList}>
+      {!result &&
+        <View style={{ width: '100%', height: 50,  marginTop: 22, position: 'relative' }} >
+          <Text style={[GlobalStyles.mediumText, { width: '100%', fontWeight: '300'  }]}>
+            Tu n'as pas encore de recettes. Tu peux faire la liste de tes ingrédients dans
+          </Text>
+          <Link to='/'
+            style={{ position: "absolute", bottom: 4, right: 40 }}>
+              <Text
+                style={[GlobalStyles.mediumText, GlobalStyles.textBold,
+                { color: '#171780', borderBottomWidth: 3, borderBottomColor: '#171780' }]}>
+                  Mon Inventaire
+                </Text>
+            </Link>
+        </View>
+      }
 
-        {result.recipes && result.recipes.map(recipe => (
-          <View key={recipe.id}
-            style={[styles.recipeItem,
-            { backgroundColor: '#171780', shadowColor: colorScheme === 'dark' ? 'turquoise' : '#000' }
-            ]}>
+      {result &&
+        <>
+          <Text style={[GlobalStyles.bigText, styles.message]}>{result.message}</Text>
 
-            <View style={styles.recipeHead}>
-              <Text style={([styles.recipeTitle, GlobalStyles.veryBigText, GlobalStyles.textBold])}>
-                {recipe.name}
-              </Text>
+          <View style={styles.recipeList}>
+
+          {result.recipes && result.recipes.map(recipe => (
+            <View key={recipe.id}
+              style={[styles.recipeItem,
+              { backgroundColor: '#171780', shadowColor: colorScheme === 'dark' ? 'turquoise' : '#000' }
+              ]}>
+
+              <View style={styles.recipeHead}>
+                <Text style={([styles.recipeTitle, GlobalStyles.veryBigText, GlobalStyles.textBold])}>
+                  {recipe.name}
+                </Text>
+              </View>
+
+              <View style={styles.ingredients}>
+                {recipe.ingredients.map((text, index) => (
+                  <View  key={text + index} style={styles.ingredientItem}>
+
+                    <Text key={text} style={[styles.ingredientText, GlobalStyles.textBold, GlobalStyles.whiteText]}>
+                      {text}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+
             </View>
-
-            <View style={styles.ingredients}>
-              {recipe.ingredients.map((text, index) => (
-                <View  key={text + index} style={styles.ingredientItem}>
-
-                  <Text key={text} style={[styles.ingredientText, GlobalStyles.textBold, GlobalStyles.whiteText]}>
-                    {text}
-                  </Text>
-                </View>
-              ))}
-            </View>
-
+          ))}
           </View>
-        ))}
-      </View>
+        </>
+      }
+
     </View>
   )
 }
