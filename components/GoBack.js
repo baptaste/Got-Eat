@@ -1,14 +1,19 @@
 import React from 'react'
-import { Image } from 'react-native'
-import { Link } from 'react-router-native'
+import { Image, TouchableOpacity } from 'react-native'
+import { useNavigate } from 'react-router-native'
 
 export default function GoBack({ pathname }) {
+  const navigate = useNavigate()
+
   return (
-    <Link to={pathname === '/inventory' ? '/inventory' : '/'} style={{ width: 50, height: 40, }}>
+    <TouchableOpacity
+      onPress={() => navigate(-1)}
+      style={{ width: 50, height: 40,  justifyContent: 'center', marginLeft: 5}}
+    >
       <Image
         source={require('../assets/icons/left-arrow.png')}
-        style={{ width: 23, height: 23, tintColor: 'grey' }}
+        style={{ width: 25, height: 25, tintColor: 'grey' }}
       />
-    </Link>
+    </TouchableOpacity>
   )
 }

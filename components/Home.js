@@ -1,72 +1,78 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-
-import { Link, useLocation } from 'react-router-native'
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import { Link } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
-import Inventory from '../assets/icons/shopping-list.png'
-import Recipes from '../assets/icons/recipe-chef.png'
-import RightArrow from '../assets/icons/right-arrow.png'
 
 export default function Home({ windowHeight, colorScheme }) {
 
   return (
     <View style={{ height: windowHeight - 110 }}>
+
       <Text style={[GlobalStyles.hugeText]}>Bonjour</Text>
 
       <View style={styles.contentArea}>
 
-        <View style={styles.contentItem}>
-          <Text style={[GlobalStyles.bigText, GlobalStyles.whiteText]}>Mon inventaire</Text>
-          <Link to='/inventory' style={{ marginTop: 20 }}>
-            <Image
-              source={Inventory}
-              style={{width: 50, alignSelf: 'flex-start', tintColor: 'white', resizeMode: 'contain' }}
-            />
-          </Link>
-          <Image source={RightArrow} style={{width: 25, alignSelf: 'flex-end', tintColor: 'white', resizeMode: 'contain' }} />
-        </View>
+        <Link to='/inventory' style={[styles.contentItem, { backgroundColor: 'hsl(242, 72%, 44%)' }]} >
+          <>
+            <Text style={[GlobalStyles.bigText, GlobalStyles.whiteText]}>Trouver ma recette</Text>
+            <Text style={[GlobalStyles.mediumText, GlobalStyles.whiteText, { width: '80%' }]}>
+              Je fais l'inventaire de mes fonds de placard
+            </Text>
+          </>
+        </Link>
 
-        <View style={styles.contentItem}>
-          <Text style={[GlobalStyles.bigText, GlobalStyles.whiteText]}>Mes recettes</Text>
-          <Link to='/result' style={{ alignSelf: 'flex-start' }}>
-            <Image
-              source={Recipes}
-              style={{width: 50, alignSelf: 'flex-start', tintColor: 'white', resizeMode: 'contain'}}
-            />
-          </Link>
-          <Image source={RightArrow} style={{width: 25, alignSelf: 'flex-end', tintColor: 'white', resizeMode: 'contain' }} />
-        </View>
+        <Link to='/cart' style={[styles.contentItem, { backgroundColor: 'white' }]} >
+          <>
+            <Text style={[GlobalStyles.bigText, { color: 'hsl(242, 72%, 6%)' }]}>Ma liste d'ingrédients</Text>
+            <Text style={[GlobalStyles.mediumText, { width: '80%', color: 'hsl(242, 72%, 6%)' }]}>
+              Voir ceux présents dans mon inventaire
+            </Text>
+          </>
+        </Link>
 
-
+        <Link to='/result' style={[styles.contentItem, { backgroundColor: 'hsl(242, 72%, 6%)' }]}>
+          <>
+            <Text style={[GlobalStyles.bigText, GlobalStyles.whiteText]}>Mon carnet perso</Text>
+            <Text style={[GlobalStyles.mediumText, GlobalStyles.whiteText, { width: '80%' }]}>
+              Voir mes recettes
+            </Text>
+          </>
+        </Link>
 
       </View>
+
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   contentArea: {
-    width: '100%',
-    height: '100%',
+    // width: '100%',
+    // height: '100%',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginVertical: 32
+    marginVertical: 32,
+    // backgroundColor: 'salmon'
   },
   contentItem: {
     width: '100%',
-    height: '25%',
-    borderWidth: 2,
-    borderColor: 'grey',
+    height: '30%',
+    // flex: 1,
+    justifyContent: 'space-around',
+    // borderWidth: 2,
+    // borderColor: 'grey',
     borderRadius: 15,
+    // borderWidth: 3,
     padding: 20,
-    marginBottom: 22,
-    backgroundColor: '#0C0A3E',
+    marginBottom: 32,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.51,
+    shadowRadius: 15,
+    elevation: 15,
   },
-  absolute: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0
-  }
 })

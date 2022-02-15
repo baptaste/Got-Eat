@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
-import GoBack from '../components/GoBack'
+import PageHead from '../components/PageHead'
 
 export default function Result({ result, colorScheme, setCurrentLocation }) {
   const { pathname } = useLocation()
@@ -13,18 +13,14 @@ export default function Result({ result, colorScheme, setCurrentLocation }) {
   return (
     <View style={styles.result}>
 
-      <GoBack />
-
-      <Text style={GlobalStyles.hugeText}>
-        Recettes
-      </Text>
+      <PageHead title='Recettes' />
 
       {!result &&
-        <View style={{ width: '100%', height: 50,  marginTop: 22, position: 'relative' }} >
+        <View style={styles.message, { width: '100%', height: 50, position: 'relative' }} >
           <Text style={[GlobalStyles.mediumText, { width: '100%', fontWeight: '300'  }]}>
             Tu n'as pas encore de recettes. Tu peux faire la liste de tes ingrédients dans
           </Text>
-          <Link to='/'
+          <Link to='/inventory'
             style={{ position: "absolute", bottom: 4, right: 40 }}>
               <Text
                 style={[GlobalStyles.mediumText, GlobalStyles.textBold,
@@ -80,7 +76,7 @@ const styles = StyleSheet.create({
     // marginTop: 60
   },
   message: {
-    marginVertical: 30
+    marginVertical: 16
   },
   recipeList: {
     flex: 5,

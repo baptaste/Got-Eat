@@ -10,7 +10,8 @@ export default function Submit({ state, userIngredients, setResult }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    const userData = { ...state, userIngredients }
+    const ingredientsToString = userIngredients.map(item => item.value.toLowerCase())
+    const userData = { ...state, ingredientsToString }
 
     try {
       const res = await axios.post(
@@ -25,7 +26,7 @@ export default function Submit({ state, userIngredients, setResult }) {
         }
       );
 
-      console.log('response :', res);
+      // console.log('response :', res);
 
       if (res.status === 200) {
         setResult(res.data)
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 5,
     },
-    shadowOpacity: 0.51,
+    shadowOpacity: 0.91,
     shadowRadius: 10,
     elevation: 15,
     zIndex: 1000,

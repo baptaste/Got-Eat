@@ -5,15 +5,17 @@ import { NativeRouter, Routes, Route } from "react-router-native";
 // import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GlobalStyles } from './styles/GlobalStyles';
-import Head from './components/Head'
+import { formData } from './data'
+import Salt from './assets/icons/salt.png'
+import Pepper from './assets/icons/pepper.png'
 import Consent from './components/Consent'
-// import Form from './components/Form'
 import Inventory from './components/Inventory';
 import Ingredients from './components/Ingredients';
 import Submit from './components/Submit';
 import Result from './components/Result';
 import Nav from './components/Nav';
 import Home from './components/Home';
+import Cart from './components/Cart';
 
 export default function App() {
   const colorScheme = Appearance.getColorScheme()
@@ -44,10 +46,14 @@ export default function App() {
 
   const [isMoreInfoHidden, setIsMoreInfoHidden] = useState(true)
   const [hasConsent, setHasConsent] = useState(false)
+  const [formItems, setFormItems] = useState(formData)
   const [category, setCategory] = useState(null)
   const [stepsCompleted, setStepsCompleted] = useState([])
-  const [userIngredients, setUserIngredients] = useState(['sel', 'poivre'])
-  const [ingredientsPicked, setIngredientsPicked] = useState([])
+  const [userIngredients, setUserIngredients] = useState([
+    { value: 'Sel', name: 'default', image: Salt },
+    { value: 'Poivre', name: 'default', image: Pepper }
+  ])
+  const [currentIngredientsPicked, setCurrentIngredientsPicked] = useState([])
   const [result, setResult] = useState(null)
   const [isStateClear, setIsStateClear] = useState(false)
   const [currentLocation, setCurrentLocation] = useState('/')
@@ -74,34 +80,67 @@ export default function App() {
   })
   // console.log('state :', state);
 
-  const handleIngredientPick = (name, boolean, value) => {
-    setUserIngredients([...userIngredients, value.toLowerCase()])
-    dispatchToState(name, boolean, value)
+  const handleIngredientPick = (categoryName, booleanName, ingredient) => {
+
+    if (userIngredients.includes(ingredient)) {
+      // remove ingredient
+      const updatedUserIngredients = userIngredients.filter(ing => ing !== ingredient)
+      setUserIngredients([...updatedUserIngredients])
+      console.log('ingredient', ingredient, 'has been removed from users ingredients.', updatedUserIngredients);
+    } else {
+      // add ingredient
+      setUserIngredients([...userIngredients, ingredient])
+    }
+
+    dispatchToState(categoryName, booleanName, ingredient)
   }
 
   const dispatchToState = (categoryName, booleanName, value) => {
     const key = categoryName,
           booleanKey = booleanName;
+    // if (state[categoryName])
 
-    setState({
-      ...state,
-      [key]: [ ...state[key], value.toLowerCase() ],
-      [booleanKey]: true
-    })
+    /* TODO : passer le booleen a true lors de l'ajout d'un ingredient , ça c'est bon.
+      MAIS le repasser a false SI on a supprimé tous les ingredients correspondant au Array du state
+    */
 
-    console.log(
-      '***STATE UPDATE***',
-      key, 'set to:', [ ...state[key], value ],
-      booleanKey, 'set to:', true
-    );
+    const isAlreadyInState = state[key].includes(value)
+
+    if (isAlreadyInState) {
+      console.log('MODIFYING // ingredient', value, 'already present in', key);
+      const updatedStateKey = state[key].filter(el => el !== value)
+      setState({
+        ...state,
+        [key]: [...updatedStateKey],
+        [booleanKey]: updatedStateKey.length >= 1 ? true : !state[booleanKey]
+      })
+      console.log('***STATE UPDATE*** , ingredient', value, 'removed in', key, updatedStateKey);
+    }
+
+    if (!isAlreadyInState) {
+      setState({
+        ...state,
+        [key]: [ ...state[key], value ], // A REVOIR
+        [booleanKey]: state[key].length >= 1 ? true : !state[booleanKey] // A REVOIR
+      })
+
+      console.log(
+        '***STATE UPDATE***',
+        key, 'added to:', [ ...state[key], value ],
+        booleanKey, 'set to:', state[key].length >= 1 ? true : !state[booleanKey]
+      );
+    }
   }
 
   const clearState = () => {
     setCurrentLocation('/')
     setCategory(null)
     setStepsCompleted([])
-    setUserIngredients(['sel', 'poivre'])
-    setIngredientsPicked([])
+    setUserIngredients([
+      { value: 'Sel', name: 'default', image: Salt },
+      { value: 'Poivre', name: 'default', image: Pepper }
+    ])
+    setCurrentIngredientsPicked([])
     setResult(null)
     setState({
       hasStarchyFoods: false,
@@ -126,13 +165,17 @@ export default function App() {
     setIsStateClear(true)
   }
 
-  isStateClear && console.log('*** state cleared ***', state)
-
   useEffect(() => {
-    if (userIngredients.length > 2) console.log('userIngredients :', userIngredients)
-  }, [userIngredients])
+    console.log('state :', state);
+  }, [state])
 
-  console.log('current location :', currentLocation);
+  // useEffect(() => {
+  //   console.log('userIngredients :', userIngredients);
+  // }, [userIngredients])
+
+   useEffect(() => {
+    isStateClear && console.log('*** state cleared ***')
+  }, [isStateClear])
 
   return (
     // <LinearGradient
@@ -163,12 +206,13 @@ export default function App() {
               element={
                 hasConsent &&
                   <Inventory
+                    formItems={formItems}
                     setCurrentLocation={setCurrentLocation}
                     setCategory={setCategory}
                     stepsCompleted={stepsCompleted}
-                    colorScheme={colorScheme}
-                    clearState={clearState}
                     userIngredients={userIngredients}
+                    state={state}
+                    clearState={clearState}
                   />
               }
             />
@@ -176,14 +220,26 @@ export default function App() {
               element={
                 <Ingredients
                   category={category}
+                  userIngredients={userIngredients}
+                  currentIngredientsPicked={currentIngredientsPicked}
+                  setCurrentIngredientsPicked={setCurrentIngredientsPicked}
                   handleIngredientPick={handleIngredientPick}
-                  ingredientsPicked={ingredientsPicked}
-                  setIngredientsPicked={setIngredientsPicked}
                   stepsCompleted={stepsCompleted}
                   setStepsCompleted={setStepsCompleted}
                   colorScheme={colorScheme}
                   windowHeight={windowHeight}
                   setCurrentLocation={setCurrentLocation}
+                  state={state}
+                />
+              }
+            />
+            <Route exact path='/cart'
+              element={
+                <Cart
+                  setCurrentLocation={setCurrentLocation}
+                  clearState={clearState}
+                  userIngredients={userIngredients}
+                  colorScheme={colorScheme}
                 />
               }
             />
@@ -240,9 +296,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     // flex: 1,
-    marginTop: 40,
+    marginTop: 20,
     // backgroundColor: 'green'
-
   },
   footer: {
     alignItems: 'center',

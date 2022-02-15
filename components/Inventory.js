@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
-import { formData } from '../data'
-import GoBack from '../components/GoBack'
-import Checked from '../assets/icons/check.png'
+import CartIcon from '../assets/icons/shopping-basket.png'
+import PageHead from '../components/PageHead'
+import Cart from '../components/Cart'
+import Checked from '../assets/icons/checked.png'
 
-export default function Inventory({ setCategory, stepsCompleted, colorScheme, clearState, setCurrentLocation, userIngredients }) {
-  const [formItems, setFormItems] = useState(formData)
+export default function Inventory({ formItems, setCategory, clearState, stepsCompleted, setCurrentLocation, userIngredients, state }) {
+
   const { pathname } = useLocation()
+
+  const [isCartActive, setIsCartActive] = useState(false)
+  const handleCartButtonPress = () => setIsCartActive(!isCartActive)
 
   useEffect(() => {
     setCurrentLocation(pathname)
@@ -17,55 +21,56 @@ export default function Inventory({ setCategory, stepsCompleted, colorScheme, cl
   return (
     <View style={styles.inventory}>
 
-      <GoBack pathname={pathname} />
+      <PageHead title='Mon inventaire' />
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={[GlobalStyles.text, GlobalStyles.hugeText, GlobalStyles.textCenter]}>Mon inventaire</Text>
-
-        {userIngredients.length >= 3 &&
-          <TouchableOpacity onPress={clearState} style={{ alignItems: 'center', marginRight: 5 }}>
-            <Image
-              source={require('../assets/icons/undo-arrow.png')}
-              style={{ width: 25, height: 25, tintColor: colorScheme === 'dark' ? 'white' : 'black' }}
-            />
-            <Text>Effacer</Text>
+      {!isCartActive &&
+        <TouchableOpacity
+          onPress={handleCartButtonPress}
+          style={styles.cartButton}
+        >
+          <Image source={CartIcon} style={{ width: 25, height: 25 }} />
+          <Text style={[GlobalStyles.mediumText, GlobalStyles.textBold, { color: 'black' }]}>
+            {userIngredients.length >= 3 ? (`Ingrédients (${userIngredients.length - 2})`) : ('Ingrédients')}
+          </Text>
         </TouchableOpacity>
-        }
-      </View>
+      }
 
+      {isCartActive &&
+        <Cart
+          setCurrentLocation={setCurrentLocation}
+          clearState={clearState}
+          userIngredients={userIngredients}
+          handleCartButtonPress={handleCartButtonPress}
+        />
+      }
 
       <View style={styles.inventoryList}>
 
         {formItems.map((item, index) => (
+
           <Link
             onPress={() => setCategory(item)}
             to='/inventory/ingredients'
             key={item.id}
-            style={
-              stepsCompleted.includes(item.id) ?
-              [styles.inventoryItem, styles.completed] // true => grey background
-              : [styles.inventoryItem, {
-                backgroundColor: colorScheme === 'dark' ? 'hsl(242, 72%, 44%)' : '#0C0A3E'
-              }]
-            }
+            style={state[item.boolean.name] ? [styles.inventoryItem, styles.completed] : styles.inventoryItem}
           >
             <>
               <Text
-                style={stepsCompleted.includes(item.id) ?
-                  [styles.completed,
+                style={state[item.boolean.name] ?
+                [ styles.completed,
                   GlobalStyles.mediumText,
                   GlobalStyles.textBold,
-                  GlobalStyles.textCenter]
-                  : [
+                  GlobalStyles.textCenter, { backgroundColor: 'transparent' }
+                ] : [
                   GlobalStyles.whiteText,
                   GlobalStyles.mediumText,
                   GlobalStyles.textBold,
-                  GlobalStyles.textCenter
+                  GlobalStyles.textCenter, { backgroundColor: 'transparent' }
                 ]}
               >
                 {item.label}
               </Text>
-              {stepsCompleted.includes(item.id) &&
+              {state[item.boolean.name] &&
                 <Image
                   source={Checked}
                   style={styles.checked}
@@ -103,7 +108,7 @@ const styles = StyleSheet.create({
     height: 150,
     marginBottom: 15,
     padding: 10,
-    // backgroundColor: '#0C0A3E',
+    backgroundColor: '#0C0A3E',
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: {
@@ -116,20 +121,29 @@ const styles = StyleSheet.create({
   },
   completed: {
     // backgroundColor: 'hsl(158, 100%, 20%)' // jade
-    // backgroundColor: 'hsl(140, 52%, 25%' // emerald
+    // backgroundColor: 'hsl(140, 52%, 25%)' // emerald
     // backgroundColor: 'hsl(134, 64%, 29%)', // deep emerald
-    // color: 'darkgrey'
-    backgroundColor: '#2b2b2b',
+    backgroundColor: 'hsl(242, 72%, 6%)',
     color: '#525252'
   },
   checked: {
-    width: 30,
-    height: 30,
+    width: 20,
+    height: 20,
     position: 'absolute',
     top: 10,
-    right: 10,
-    // tintColor: 'hsl(134, 64%, 29%)',
-    tintColor: 'hsl(242, 72%, 44%)',
-    zIndex: -1
+    right: 12,
+    // tintColor: 'hsl(242, 72%, 44%)', // blue
+    tintColor: 'hsl(134, 64%, 29%)', // deep emerald
+    zIndex: -1,
+  },
+  cartButton: {
+    width: 180,
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: '#ddd',
+    paddingHorizontal: 10,
+    borderRadius: 7,
   }
 })
