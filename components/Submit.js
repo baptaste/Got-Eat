@@ -38,7 +38,7 @@ export default function Submit({ state, userIngredients, setResult }) {
   }
 
   return (
-    <TouchableOpacity onPress={handleSubmit} style={[styles.submit, { shadowColor: 'turquoise' }]}>
+    <TouchableOpacity onPress={handleSubmit} style={[styles.submit, GlobalStyles.secondBg, { shadowColor: 'turquoise' }]}>
       <Text style={[styles.submitBtn, GlobalStyles.bigText]}>J'ai faim</Text>
     </TouchableOpacity>
   )
@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 18,
-    backgroundColor: 'hsl(242, 72%, 44%)',
     shadowOffset: {
       width: 0,
       height: 5,

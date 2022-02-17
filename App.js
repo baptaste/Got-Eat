@@ -16,6 +16,7 @@ import Result from './components/Result';
 import Nav from './components/Nav';
 import Home from './components/Home';
 import Cart from './components/Cart';
+import Recipe from './components/Recipe';
 
 export default function App() {
   const colorScheme = Appearance.getColorScheme()
@@ -55,6 +56,7 @@ export default function App() {
   ])
   const [currentIngredientsPicked, setCurrentIngredientsPicked] = useState([])
   const [result, setResult] = useState(null)
+  const [recipe, setRecipe] = useState()
   const [isStateClear, setIsStateClear] = useState(false)
   const [currentLocation, setCurrentLocation] = useState('/')
 
@@ -245,7 +247,12 @@ export default function App() {
             />
             <Route exact path='/result'
               element={
-                <Result result={result} colorScheme={colorScheme} setCurrentLocation={setCurrentLocation} />
+                <Result result={result} colorScheme={colorScheme} setCurrentLocation={setCurrentLocation} setRecipe={setRecipe} />
+              }
+            />
+            <Route exact path='/result/:id'
+              element={
+                recipe && <Recipe recipe={recipe} setCurrentLocation={setCurrentLocation} />
               }
             />
           </Routes>
@@ -256,7 +263,7 @@ export default function App() {
       </ScrollView>
 
 
-      {userIngredients.length > 5 && result === null &&
+      {userIngredients.length > 5 && (result === null || result.status === 'Error') &&
         <Submit state={state} userIngredients={userIngredients} setResult={setResult} />
       }
 

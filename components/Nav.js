@@ -30,8 +30,8 @@ export default function Nav({ colorScheme, clearState, currentLocation, result }
               source={icon}
               style={{ width: 30, height: 30,
                 tintColor: colorScheme === 'dark' ?
-                  currentLocation === path ? '#0C0A3E' : 'grey'
-                  : currentLocation === path ? '#0C0A3E' : 'grey'
+                  currentLocation === path ? GlobalStyles.mainTintColor.tintColor : 'grey'
+                  : currentLocation === path ? GlobalStyles.mainTintColor.tintColor : 'grey'
               }}
             />
             <Text style={styles.linkText}>{name}</Text>
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     height: 60,
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: '#ddd'
+    borderTopColor: GlobalStyles.fourthBg.backgroundColor
   },
   navLink: {
     alignItems: 'center',

@@ -12,7 +12,7 @@ export default function Home({ windowHeight, colorScheme }) {
 
       <View style={styles.contentArea}>
 
-        <Link to='/inventory' style={[styles.contentItem, { backgroundColor: 'hsl(242, 72%, 44%)' }]} >
+        <Link to='/inventory' style={[styles.contentItem, GlobalStyles.secondBg]} >
           <>
             <Text style={[GlobalStyles.bigText, GlobalStyles.whiteText]}>Trouver ma recette</Text>
             <Text style={[GlobalStyles.mediumText, GlobalStyles.whiteText, { width: '80%' }]}>
@@ -23,14 +23,14 @@ export default function Home({ windowHeight, colorScheme }) {
 
         <Link to='/cart' style={[styles.contentItem, { backgroundColor: 'white' }]} >
           <>
-            <Text style={[GlobalStyles.bigText, { color: 'hsl(242, 72%, 6%)' }]}>Ma liste d'ingrédients</Text>
-            <Text style={[GlobalStyles.mediumText, { width: '80%', color: 'hsl(242, 72%, 6%)' }]}>
+            <Text style={[GlobalStyles.bigText, GlobalStyles.thirdColor]}>Ma liste d'ingrédients</Text>
+            <Text style={[GlobalStyles.mediumText, GlobalStyles.thirdColor, { width: '80%' }]}>
               Voir ceux présents dans mon inventaire
             </Text>
           </>
         </Link>
 
-        <Link to='/result' style={[styles.contentItem, { backgroundColor: 'hsl(242, 72%, 6%)' }]}>
+        <Link to='/result' style={[styles.contentItem, GlobalStyles.thirdBg]}>
           <>
             <Text style={[GlobalStyles.bigText, GlobalStyles.whiteText]}>Mon carnet perso</Text>
             <Text style={[GlobalStyles.mediumText, GlobalStyles.whiteText, { width: '80%' }]}>

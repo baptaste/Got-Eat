@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react'
+import axios from 'axios'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import PageHead from '../components/PageHead'
+import RightArrow from '../assets/icons/right-arrow.png'
+import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes'
 
-export default function Result({ result, colorScheme, setCurrentLocation }) {
+export default function Result({ result, colorScheme, setCurrentLocation, setRecipe }) {
   const { pathname } = useLocation()
   useEffect(() => {
     setCurrentLocation(pathname)
@@ -21,10 +24,9 @@ export default function Result({ result, colorScheme, setCurrentLocation }) {
             Tu n'as pas encore de recettes. Tu peux faire la liste de tes ingrédients dans
           </Text>
           <Link to='/inventory'
-            style={{ position: "absolute", bottom: 4, right: 40 }}>
+            style={{ position: "absolute", bottom: 7, right: 40 }}>
               <Text
-                style={[GlobalStyles.mediumText, GlobalStyles.textBold,
-                { color: '#171780', borderBottomWidth: 3, borderBottomColor: '#171780' }]}>
+                style={[GlobalStyles.mediumText, GlobalStyles.textBold, GlobalStyles.secondColor]}>
                   Mon Inventaire
                 </Text>
             </Link>
@@ -39,26 +41,29 @@ export default function Result({ result, colorScheme, setCurrentLocation }) {
 
           {result.recipes && result.recipes.map(recipe => (
             <View key={recipe.id}
-              style={[styles.recipeItem,
-              { backgroundColor: '#171780', shadowColor: colorScheme === 'dark' ? 'turquoise' : '#000' }
+              style={[styles.recipeItem, GlobalStyles.secondBg,
+              { shadowColor: colorScheme === 'dark' ? 'turquoise' : '#000' }
               ]}>
 
-              <View style={styles.recipeHead}>
-                <Text style={([styles.recipeTitle, GlobalStyles.veryBigText, GlobalStyles.textBold])}>
-                  {recipe.name}
-                </Text>
-              </View>
+              <Image
+                source={{ uri: `http://192.168.1.33:3000/${recipe.image}`, width: '100%', height: 200 }}
+                style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, resizeMode: 'cover' }}
+              />
 
-              <View style={styles.ingredients}>
-                {recipe.ingredients.map((text, index) => (
-                  <View  key={text + index} style={styles.ingredientItem}>
+              <Link to={`/result/${recipe.id}`} onPress={() => setRecipe(recipe)} style={styles.recipeLink}>
+                <View style={styles.linkContent}>
+                  <Text style={[styles.recipeTitle, GlobalStyles.veryBigText, GlobalStyles.textBold, GlobalStyles.whiteText]}>
+                    {recipe.name}
+                  </Text>
 
-                    <Text key={text} style={[styles.ingredientText, GlobalStyles.textBold, GlobalStyles.whiteText]}>
-                      {text}
+                  <View style={styles.seeRecipe}>
+                    <Text style={[GlobalStyles.mediumText, GlobalStyles.textBold, GlobalStyles.whiteText ]}>
+                      Voir ma recette
                     </Text>
+                    <Image source={RightArrow} style={{ width: 20, height: 20, tintColor: 'white' }} />
                   </View>
-                ))}
-              </View>
+                </View>
+              </Link>
 
             </View>
           ))}
@@ -73,7 +78,6 @@ export default function Result({ result, colorScheme, setCurrentLocation }) {
 const styles = StyleSheet.create({
   result: {
     flex: 1,
-    // marginTop: 60
   },
   message: {
     marginVertical: 16
@@ -98,40 +102,25 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 15,
   },
-  recipeHead: {
+  recipeLink: {
     width: '100%',
+    paddingTop: 10,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
     alignItems: 'center',
-    justifyContent: 'center'
   },
   recipeTitle: {
-    paddingVertical: 30,
-    // color: 'hsl(242, 72%, 44%)',
-    color: 'white'
+    alignSelf: 'flex-start',
   },
-  ingredients: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    padding: 20,
-    justifyContent: 'space-between',
+  linkContent: {
+    width: '100%',
   },
-  ingredientItem: {
-    width: '45%',
-    // height: 57,
+  seeRecipe: {
+    width: '60%',
     flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-    // paddingBottom: 10,
-    // borderRightWidth: 2,
-    // borderRightColor: 'hsl(242, 72%, 44%)',
-  },
-  ingredientText: {
-    width: '80%'
-  },
-  dot: {
-    width: 7,
-    height: 7,
-    backgroundColor: 'hsl(242, 72%, 44%)',
-    borderRadius: 3.5
+    alignSelf: 'flex-end',
+    paddingTop: 20
   }
 })

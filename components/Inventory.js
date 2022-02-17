@@ -26,7 +26,7 @@ export default function Inventory({ formItems, setCategory, clearState, stepsCom
       {!isCartActive &&
         <TouchableOpacity
           onPress={handleCartButtonPress}
-          style={styles.cartButton}
+          style={[styles.cartButton, GlobalStyles.fourthBg]}
         >
           <Image source={CartIcon} style={{ width: 25, height: 25 }} />
           <Text style={[GlobalStyles.mediumText, GlobalStyles.textBold, { color: 'black' }]}>
@@ -52,7 +52,8 @@ export default function Inventory({ formItems, setCategory, clearState, stepsCom
             onPress={() => setCategory(item)}
             to='/inventory/ingredients'
             key={item.id}
-            style={state[item.boolean.name] ? [styles.inventoryItem, styles.completed] : styles.inventoryItem}
+            style={state[item.boolean.name] ?
+              [styles.inventoryItem, styles.completed] : [GlobalStyles.mainBg, styles.inventoryItem]}
           >
             <>
               <Text
@@ -73,7 +74,7 @@ export default function Inventory({ formItems, setCategory, clearState, stepsCom
               {state[item.boolean.name] &&
                 <Image
                   source={Checked}
-                  style={styles.checked}
+                  style={[styles.checked, GlobalStyles.fithTintColor]}
                 />
               }
             </>
@@ -108,7 +109,6 @@ const styles = StyleSheet.create({
     height: 150,
     marginBottom: 15,
     padding: 10,
-    backgroundColor: '#0C0A3E',
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: {
@@ -120,10 +120,7 @@ const styles = StyleSheet.create({
     elevation: 15,
   },
   completed: {
-    // backgroundColor: 'hsl(158, 100%, 20%)' // jade
-    // backgroundColor: 'hsl(140, 52%, 25%)' // emerald
-    // backgroundColor: 'hsl(134, 64%, 29%)', // deep emerald
-    backgroundColor: 'hsl(242, 72%, 6%)',
+    backgroundColor: GlobalStyles.thirdBg.backgroundColor,
     color: '#525252'
   },
   checked: {
@@ -132,8 +129,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 12,
-    // tintColor: 'hsl(242, 72%, 44%)', // blue
-    tintColor: 'hsl(134, 64%, 29%)', // deep emerald
     zIndex: -1,
   },
   cartButton: {
@@ -142,7 +137,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    backgroundColor: '#ddd',
     paddingHorizontal: 10,
     borderRadius: 7,
   }
