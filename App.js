@@ -47,14 +47,12 @@ export default function App() {
 
   const [isMoreInfoHidden, setIsMoreInfoHidden] = useState(true)
   const [hasConsent, setHasConsent] = useState(false)
-  const [formItems, setFormItems] = useState(formData)
+  const [dataItems, setDataItems] = useState(formData)
   const [category, setCategory] = useState(null)
-  const [stepsCompleted, setStepsCompleted] = useState([])
   const [userIngredients, setUserIngredients] = useState([
-    { value: 'Sel', name: 'default', image: Salt },
-    { value: 'Poivre', name: 'default', image: Pepper }
+    { value: 'Sel', name: 'default', image: Salt, category: 'Les essentiels' },
+    { value: 'Poivre', name: 'default', image: Pepper, category: 'Les essentiels' }
   ])
-  const [currentIngredientsPicked, setCurrentIngredientsPicked] = useState([])
   const [result, setResult] = useState(null)
   const [recipe, setRecipe] = useState()
   const [isStateClear, setIsStateClear] = useState(false)
@@ -100,11 +98,6 @@ export default function App() {
   const dispatchToState = (categoryName, booleanName, value) => {
     const key = categoryName,
           booleanKey = booleanName;
-    // if (state[categoryName])
-
-    /* TODO : passer le booleen a true lors de l'ajout d'un ingredient , ça c'est bon.
-      MAIS le repasser a false SI on a supprimé tous les ingredients correspondant au Array du state
-    */
 
     const isAlreadyInState = state[key].includes(value)
 
@@ -122,13 +115,13 @@ export default function App() {
     if (!isAlreadyInState) {
       setState({
         ...state,
-        [key]: [ ...state[key], value ], // A REVOIR
-        [booleanKey]: state[key].length >= 1 ? true : !state[booleanKey] // A REVOIR
+        [key]: [ ...state[key], value ],
+        [booleanKey]: state[key].length >= 1 ? true : !state[booleanKey]
       })
 
       console.log(
         '***STATE UPDATE***',
-        key, 'added to:', [ ...state[key], value ],
+        value.value, 'added to:', key, [ ...state[key], value ],
         booleanKey, 'set to:', state[key].length >= 1 ? true : !state[booleanKey]
       );
     }
@@ -137,12 +130,10 @@ export default function App() {
   const clearState = () => {
     setCurrentLocation('/')
     setCategory(null)
-    setStepsCompleted([])
     setUserIngredients([
-      { value: 'Sel', name: 'default', image: Salt },
-      { value: 'Poivre', name: 'default', image: Pepper }
+      { value: 'Sel', name: 'default', image: Salt, category: 'Les essentiels' },
+      { value: 'Poivre', name: 'default', image: Pepper, category: 'Les essentiels' }
     ])
-    setCurrentIngredientsPicked([])
     setResult(null)
     setState({
       hasStarchyFoods: false,
@@ -172,12 +163,12 @@ export default function App() {
   }, [state])
 
   // useEffect(() => {
-  //   console.log('userIngredients :', userIngredients);
-  // }, [userIngredients])
+  //   console.log('category :', category);
+  // }, [category])
 
-   useEffect(() => {
-    isStateClear && console.log('*** state cleared ***')
-  }, [isStateClear])
+  //  useEffect(() => {
+  //   isStateClear && console.log('*** state cleared ***')
+  // }, [isStateClear])
 
   return (
     // <LinearGradient
@@ -208,13 +199,13 @@ export default function App() {
               element={
                 hasConsent &&
                   <Inventory
-                    formItems={formItems}
+                    dataItems={dataItems}
                     setCurrentLocation={setCurrentLocation}
                     setCategory={setCategory}
-                    stepsCompleted={stepsCompleted}
                     userIngredients={userIngredients}
                     state={state}
                     clearState={clearState}
+                    colorScheme={colorScheme}
                   />
               }
             />
@@ -223,11 +214,7 @@ export default function App() {
                 <Ingredients
                   category={category}
                   userIngredients={userIngredients}
-                  currentIngredientsPicked={currentIngredientsPicked}
-                  setCurrentIngredientsPicked={setCurrentIngredientsPicked}
                   handleIngredientPick={handleIngredientPick}
-                  stepsCompleted={stepsCompleted}
-                  setStepsCompleted={setStepsCompleted}
                   colorScheme={colorScheme}
                   windowHeight={windowHeight}
                   setCurrentLocation={setCurrentLocation}
@@ -242,6 +229,7 @@ export default function App() {
                   clearState={clearState}
                   userIngredients={userIngredients}
                   colorScheme={colorScheme}
+                  dataItems={dataItems}
                 />
               }
             />
@@ -264,7 +252,7 @@ export default function App() {
 
 
       {userIngredients.length > 5 && (result === null || result.status === 'Error') &&
-        <Submit state={state} userIngredients={userIngredients} setResult={setResult} />
+        <Submit state={state} userIngredients={userIngredients} setResult={setResult} colorScheme={colorScheme} />
       }
 
       <View style={styles.footer}>

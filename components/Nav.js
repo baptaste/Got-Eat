@@ -30,11 +30,19 @@ export default function Nav({ colorScheme, clearState, currentLocation, result }
               source={icon}
               style={{ width: 30, height: 30,
                 tintColor: colorScheme === 'dark' ?
-                  currentLocation === path ? GlobalStyles.mainTintColor.tintColor : 'grey'
-                  : currentLocation === path ? GlobalStyles.mainTintColor.tintColor : 'grey'
+                  currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
+                  : currentLocation === path ? GlobalStyles.thirdColor.color : 'grey'
               }}
             />
-            <Text style={styles.linkText}>{name}</Text>
+            <Text style={[styles.linkText,
+              { color: colorScheme === 'dark' ?
+                currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
+                : currentLocation === path ? GlobalStyles.thirdColor.color : 'grey'
+              }
+            ]}
+            >
+                {name}
+            </Text>
           </View>
         </Link>
       ))}
@@ -48,7 +56,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     height: 60,
     padding: 20,
     borderTopWidth: 1,

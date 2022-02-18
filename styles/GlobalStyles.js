@@ -40,27 +40,30 @@ export const GlobalStyles = StyleSheet.create({
   /* COLORS */
   // dark blue
   mainBg: {
-    backgroundColor: '#0C0A3E'
+    // backgroundColor: '#0C0A3E'
+    // backgroundColor: 'hsl(158, 100%, 13%)'
+
   },
   mainColor: {
    color: '#0C0A3E',
   },
-  mainTintColor: {
-    tintColor: '#0C0A3E',
-   },
   // light blue
   secondBg: {
-    backgroundColor: 'hsl(242, 72%, 44%)'
+    // backgroundColor: 'hsl(242, 72%, 44%)'
+    backgroundColor: '#00a86b' // jade
   },
   secondColor: {
-   color: 'hsl(242, 72%, 44%)',
+  //  color: 'hsl(242, 72%, 44%)',
+    color: '#00a86b'
   },
   // very dark blue (almost black)
   thirdBg: {
-    backgroundColor: 'hsl(242, 72%, 6%)',
+    // backgroundColor: 'hsl(242, 72%, 6%)',
+    backgroundColor: 'hsl(158, 100%, 9%)'  // dark jade
   },
   thirdColor: {
-    color: 'hsl(242, 72%, 6%)',
+    // color: 'hsl(242, 72%, 6%)',
+    color: 'hsl(158, 100%, 13%)' // dark jade
   },
   // light grey
   fourthBg: {
@@ -77,6 +80,6 @@ export const GlobalStyles = StyleSheet.create({
     color: 'hsl(134, 64%, 29%)',
   },
   fithTintColor: {
-    tintColor: 'hsl(134, 64%, 29%)',
+    tintColor: 'hsl(134, 64%, 35%)',
   }
 })

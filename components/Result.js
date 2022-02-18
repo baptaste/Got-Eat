@@ -24,7 +24,7 @@ export default function Result({ result, colorScheme, setCurrentLocation, setRec
             Tu n'as pas encore de recettes. Tu peux faire la liste de tes ingrédients dans
           </Text>
           <Link to='/inventory'
-            style={{ position: "absolute", bottom: 7, right: 40 }}>
+            style={{ position: "absolute", bottom: 6, right: 37 }}>
               <Text
                 style={[GlobalStyles.mediumText, GlobalStyles.textBold, GlobalStyles.secondColor]}>
                   Mon Inventaire

@@ -4,10 +4,10 @@ import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import CartIcon from '../assets/icons/shopping-basket.png'
 import PageHead from '../components/PageHead'
-import Cart from '../components/Cart'
+import CartModal from '../components/CartModal'
 import Checked from '../assets/icons/checked.png'
 
-export default function Inventory({ formItems, setCategory, clearState, stepsCompleted, setCurrentLocation, userIngredients, state }) {
+export default function Inventory({ dataItems, setCategory, clearState, setCurrentLocation, userIngredients, state, colorScheme }) {
 
   const { pathname } = useLocation()
 
@@ -28,7 +28,7 @@ export default function Inventory({ formItems, setCategory, clearState, stepsCom
           onPress={handleCartButtonPress}
           style={[styles.cartButton, GlobalStyles.fourthBg]}
         >
-          <Image source={CartIcon} style={{ width: 25, height: 25 }} />
+          <Image source={CartIcon} style={{ width: 25, height: 25, tintColor: colorScheme === 'dark' ? GlobalStyles.fourthColor.color : 'black' }} />
           <Text style={[GlobalStyles.mediumText, GlobalStyles.textBold, { color: 'black' }]}>
             {userIngredients.length >= 3 ? (`Ingrédients (${userIngredients.length - 2})`) : ('Ingrédients')}
           </Text>
@@ -36,24 +36,24 @@ export default function Inventory({ formItems, setCategory, clearState, stepsCom
       }
 
       {isCartActive &&
-        <Cart
-          setCurrentLocation={setCurrentLocation}
+        <CartModal
           clearState={clearState}
           userIngredients={userIngredients}
           handleCartButtonPress={handleCartButtonPress}
+          colorScheme={colorScheme}
         />
       }
 
       <View style={styles.inventoryList}>
 
-        {formItems.map((item, index) => (
+        {dataItems.map((item, index) => (
 
           <Link
             onPress={() => setCategory(item)}
             to='/inventory/ingredients'
             key={item.id}
             style={state[item.boolean.name] ?
-              [styles.inventoryItem, styles.completed] : [GlobalStyles.mainBg, styles.inventoryItem]}
+              [styles.inventoryItem, styles.completed] : [GlobalStyles.secondBg, styles.inventoryItem]}
           >
             <>
               <Text

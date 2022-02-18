@@ -1,94 +1,118 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
 import { useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import PageHead from '../components/PageHead'
 import Undo from '../components/Undo'
-import Close from '../assets/icons/cancel.png'
+import _ from 'lodash'
 
-export default function Cart({ setCurrentLocation, clearState, userIngredients, handleCartButtonPress, colorScheme }) {
+export default function Cart({ setCurrentLocation, clearState, userIngredients, colorScheme, dataItems }) {
 
   const { pathname } = useLocation()
+  const [filteredIngredients, setFilteredIngredients] = useState([])
 
   useEffect(() => {
     setCurrentLocation(pathname)
-  }, [])
+    getFilteredIngredients()
+  }, [userIngredients])
+
+  const getFilteredIngredients = () => {
+    let deepDataItemsCopy = _.cloneDeep(dataItems)
+
+    deepDataItemsCopy = deepDataItemsCopy.filter(category => {
+      const matchingCategories = []
+
+      userIngredients.forEach(ingredient => {
+        if (category.name === ingredient.name) matchingCategories.push(category)
+      })
+
+      if (matchingCategories.length !== 0) return matchingCategories
+    })
+
+    deepDataItemsCopy = deepDataItemsCopy.filter(category => {
+      const matchingIngredients = []
+
+      category.options.map(option => {
+        userIngredients.forEach(ingredient => {
+          if (option.value === ingredient.value) matchingIngredients.push(ingredient)
+        })
+      })
+
+      category.options = matchingIngredients
+      return matchingIngredients
+    })
+
+    setFilteredIngredients(deepDataItemsCopy)
+  }
 
   return (
 
-    pathname === '/cart' ? (
-      <View style={styles.cartScreen}>
-        <PageHead title='Mes ingrédients' />
+    <View style={styles.cartScreen}>
+      <PageHead title='Mes ingrédients' />
 
-        <Text style={[GlobalStyles.bigText, GlobalStyles.textBold, { marginVertical: 16 }]}>
-          {userIngredients.length >= 3 ?
-            `${userIngredients.length - 2} ${(userIngredients.length - 2) > 1 ? 'sélectionnés' : 'sélectionné'}`
-            : 'Ingrédients de base'
-          }
-        </Text>
+      <Text style={[GlobalStyles.bigText, GlobalStyles.textBold, GlobalStyles.textCenter, { marginVertical: 16, color: 'grey' }]}>
+        {`${userIngredients.length - 2} ${(userIngredients.length - 2) > 1 ? 'sélectionnés' : 'sélectionné'}` }
+      </Text>
 
-        <View style={[GlobalStyles.mainBg, styles.ingredientsList, { justifyContent: userIngredients.length >= 3 ? 'space-between' : 'flex-start' }]}>
-          {userIngredients.map(ingredient => (
+      {userIngredients.length >= 3 &&
+        <Undo clearState={clearState} colorScheme={colorScheme} marginTop={10}
+      />}
+
+
+      <View style={{ marginVertical: 20 }}>
+        <Text style={[GlobalStyles.whiteText, GlobalStyles.hugeText, styles.category]}>Les essentiels</Text>
+        <View style={[styles.ingredientsList]}>
+          {userIngredients.map(ingredient => ingredient.name === 'default' && (
             <View
               key={ingredient.value}
               style={styles.ingredient}
-            >
+              >
               <Image
                 source={ingredient.image}
                 accessibilityLabel={ingredient.value}
                 style={{ width: 40, height: 40, marginBottom: 10 }}
-                tintColor={colorScheme === 'dark' ? 'black' : 'white'}
+                tintColor={GlobalStyles.fourthColor.color}
               />
-              <Text style={[GlobalStyles.smallText, GlobalStyles.textBold, GlobalStyles.textCenter, { color: 'white' }]}>
+              <Text style={[GlobalStyles.smallText, GlobalStyles.textBold, GlobalStyles.textCenter, { color: GlobalStyles.fourthColor.color }]}>
                 {ingredient.value}
               </Text>
             </View>
           ))}
         </View>
-
-        {userIngredients.length >= 3 &&
-          <Undo clearState={clearState} colorScheme={colorScheme}
-        />}
       </View>
-    ) : (
-    /* MODAL in /inventory */
-    <View style={[styles.cartBlock, GlobalStyles.fourthBg]}>
 
-      <Text style={[ GlobalStyles.bigText, GlobalStyles.textBold ]}>
-        {userIngredients.length >= 3 ?
-          `${userIngredients.length - 2} ${(userIngredients.length - 2) > 1 ? 'sélectionnés' : 'sélectionné'}`
-          : 'Ingrédients de base'
-        }
-      </Text>
-
-      <View style={[GlobalStyles.row, styles.cartList]}>
-        {userIngredients.map((ingredient, index) =>
-          <Text
-            key={ingredient.value}
-            style={[
-              GlobalStyles.textBold, GlobalStyles.whiteText,
-              { paddingHorizontal: 10, paddingVertical: 5, marginRight: 5, marginBottom: 5,
-                backgroundColor: index < 2 ? GlobalStyles.mainBg.backgroundColor : GlobalStyles.secondBg.backgroundColor, borderRadius: 7 }
-              ]}
-          >
-            {ingredient.value.charAt(0).toUpperCase() + ingredient.value.slice(1)}
+      {filteredIngredients.map(item => (
+        <View key={item.id} style={{ marginBottom: 20 }}>
+          <Text style={[GlobalStyles.whiteText, GlobalStyles.hugeText, styles.category]}>
+            {item.label}
           </Text>
-        )}
+
+          <View style={[styles.ingredientsList]}>
+            {item.options.map(ingredient => (
+              <View
+                key={ingredient.value}
+                style={[styles.ingredient]}
+              >
+                <Image
+                  source={ingredient.image}
+                  accessibilityLabel={ingredient.value}
+                  style={{ width: 40, height: 40, marginBottom: 10 }}
+                  tintColor={GlobalStyles.fourthColor.color}
+                />
+                <Text
+                  style={[GlobalStyles.smallText, GlobalStyles.textBold, GlobalStyles.textCenter,
+                  { color: GlobalStyles.fourthColor.color }]}
+                >
+                  {ingredient.value}
+                </Text>
+              </View>
+            ))}
+
+          </View>
       </View>
-
-      <TouchableOpacity
-        onPress={handleCartButtonPress}
-        style={styles.close}
-      >
-        <Image source={Close} style={{  width: 20, height: 20, tintColor: '#2e2e2e' }} />
-      </TouchableOpacity>
-
-      {userIngredients.length >= 3 &&
-        <Undo clearState={clearState} colorScheme={colorScheme}
-      />}
+      ))}
 
     </View>
-    )
   )
 }
 
@@ -99,44 +123,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
+    justifyContent: 'flex-start',
     borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.51,
-    shadowRadius: 10,
-    elevation: 15
+    marginVertical: 10,
   },
   ingredient: {
     width: '33%',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 22,
+    // marginBottom: 22,
     paddingVertical: 8,
     paddingHorizontal: 4,
   },
-  cartBlock: {
-    marginVertical: 16,
-    padding: 16,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.51,
-    shadowRadius: 10,
-    elevation: 15
-  },
-  cartList: {
-    flexWrap: 'wrap',
-    marginTop: 16,
-  },
-  close: {
-    position: 'absolute',
-    top: 10,
-    right: 10
+  category: {
+    color: GlobalStyles.secondColor.color
   }
 })

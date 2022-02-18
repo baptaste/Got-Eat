@@ -7,11 +7,7 @@ import PageHead from '../components/PageHead'
 export default function Ingredients({
   category,
   userIngredients,
-  currentIngredientsPicked,
-  setCurrentIngredientsPicked,
   handleIngredientPick,
-  stepsCompleted,
-  setStepsCompleted,
   colorScheme,
   windowHeight,
   setCurrentLocation,
@@ -24,32 +20,17 @@ export default function Ingredients({
     setCurrentLocation(pathname)
   }, [])
 
-  const handleIngredientPress = (categoryName, booleanName, option) => {
-    if (userIngredients.includes(option)) {
-      // remove ingredient
-      const updatedIngredientsPicked = currentIngredientsPicked.filter(ing => ing !== option)
-      setCurrentIngredientsPicked([...updatedIngredientsPicked])
-    } else {
-      // add ingredient
-      setCurrentIngredientsPicked([...currentIngredientsPicked, option])
-    }
-
-    handleIngredientPick(categoryName, booleanName, option)
-  }
-
   return (
     <View style={{ height: windowHeight - 100 }}>
 
       <PageHead title={category.question !== null && category.question} />
 
-      {/* {( currentIngredientsPicked.length !== 0 || state[category.boolean.name] ) && */}
       {state[category.name].length >= 1 &&
         <Link
           to='/inventory'
-          onPress={() => setStepsCompleted([...stepsCompleted, category.id])}
           style={styles.validate}
         >
-          <Text style={[styles.validateBtn, GlobalStyles.textCenter, GlobalStyles.textBold]}>
+          <Text style={[styles.validateBtn, GlobalStyles.secondBg, GlobalStyles.mediumText, GlobalStyles.textCenter, GlobalStyles.textBold]}>
             C'est tout
           </Text>
         </Link>
@@ -59,7 +40,7 @@ export default function Ingredients({
 
         {category.options.map((option, index) => (
           <TouchableOpacity
-            onPress={() => handleIngredientPress(category.name, category.boolean.name, option)}
+            onPress={() => handleIngredientPick(category.name, category.boolean.name, option)}
             key={option.value}
             style={styles.ingredient}
             // disabled={ingredientsPicked.includes(option.value)}
@@ -69,8 +50,8 @@ export default function Ingredients({
                 accessibilityLabel={option.value}
                 style={{width: 40, height: 40, marginBottom: 10}}
                 tintColor={colorScheme === 'dark' ?
-                  userIngredients.includes(option) ? '#251fc1' : 'white' // dark mode
-                  : userIngredients.includes(option) ? '#251fc1' : 'black' // light mode
+                  userIngredients.includes(option) ? GlobalStyles.secondColor.color : 'white' // dark mode
+                  : userIngredients.includes(option) ? GlobalStyles.secondColor.color : 'black' // light mode
               }
               />
 
@@ -105,20 +86,16 @@ const styles = StyleSheet.create({
   },
   ingredient: {
     width: '33%',
-    // height: 75,
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 22,
     paddingVertical: 8,
     paddingHorizontal: 4,
-    // backgroundColor: '#7B7BCE',
-    // borderRadius: 10
   },
   picked: {
-    color: '#251fc1'
+    color: GlobalStyles.secondColor.color
   },
   validate: {
-    // width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     // marginTop: 15
@@ -128,8 +105,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 20,
     borderRadius: 7,
-    // backgroundColor: 'hsl(242, 72%, 44%)',
-    backgroundColor: '#0C0A3E',
     color: 'white'
   },
 })

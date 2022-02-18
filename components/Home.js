@@ -12,7 +12,7 @@ export default function Home({ windowHeight, colorScheme }) {
 
       <View style={styles.contentArea}>
 
-        <Link to='/inventory' style={[styles.contentItem, GlobalStyles.secondBg]} >
+        <Link to='/inventory' style={[styles.contentItem, GlobalStyles.secondBg, { shadowColor: colorScheme === 'dark' ? '#ddd' : 'black' }]} >
           <>
             <Text style={[GlobalStyles.bigText, GlobalStyles.whiteText]}>Trouver ma recette</Text>
             <Text style={[GlobalStyles.mediumText, GlobalStyles.whiteText, { width: '80%' }]}>
@@ -21,16 +21,16 @@ export default function Home({ windowHeight, colorScheme }) {
           </>
         </Link>
 
-        <Link to='/cart' style={[styles.contentItem, { backgroundColor: 'white' }]} >
+        <Link to='/cart' style={[styles.contentItem, GlobalStyles.thirdBg, { shadowColor: colorScheme === 'dark' ? 'grey' : 'black' }]} >
           <>
-            <Text style={[GlobalStyles.bigText, GlobalStyles.thirdColor]}>Ma liste d'ingrédients</Text>
-            <Text style={[GlobalStyles.mediumText, GlobalStyles.thirdColor, { width: '80%' }]}>
+            <Text style={[GlobalStyles.bigText, GlobalStyles.whiteText]}>Ma liste d'ingrédients</Text>
+            <Text style={[GlobalStyles.mediumText, GlobalStyles.whiteText, { width: '80%' }]}>
               Voir ceux présents dans mon inventaire
             </Text>
           </>
         </Link>
 
-        <Link to='/result' style={[styles.contentItem, GlobalStyles.thirdBg]}>
+        <Link to='/result' style={[styles.contentItem, { backgroundColor: 'black', shadowColor: colorScheme === 'dark' ? 'grey' : 'black' }]}>
           <>
             <Text style={[GlobalStyles.bigText, GlobalStyles.whiteText]}>Mon carnet perso</Text>
             <Text style={[GlobalStyles.mediumText, GlobalStyles.whiteText, { width: '80%' }]}>
@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
     // borderWidth: 3,
     padding: 20,
     marginBottom: 32,
-    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 5,

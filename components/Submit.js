@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useNavigate } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 
-export default function Submit({ state, userIngredients, setResult }) {
+export default function Submit({ state, userIngredients, setResult, colorScheme }) {
 
   const navigate = useNavigate()
 
@@ -38,8 +38,8 @@ export default function Submit({ state, userIngredients, setResult }) {
   }
 
   return (
-    <TouchableOpacity onPress={handleSubmit} style={[styles.submit, GlobalStyles.secondBg, { shadowColor: 'turquoise' }]}>
-      <Text style={[styles.submitBtn, GlobalStyles.bigText]}>J'ai faim</Text>
+    <TouchableOpacity onPress={handleSubmit} style={[styles.submit, { shadowColor: colorScheme === 'dark' ? '#ddd' : 'hsl(158, 100%, 13%)' }]}>
+      <Text style={[styles.submitBtn, GlobalStyles.bigText]}>GO</Text>
     </TouchableOpacity>
   )
 }
@@ -47,23 +47,28 @@ export default function Submit({ state, userIngredients, setResult }) {
 const styles = StyleSheet.create({
   submit: {
     position: 'absolute',
-    bottom: 80,
-    left: '20%',
-    width: '60%',
+    bottom: 100,
+    left: '30%',
+    width: '40%',
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 18,
+    borderRadius: 24,
+    borderWidth: 2,
+    borderColor: 'hsl(158, 100%, 13%)',
+    // backgroundColor: GlobalStyles.secondBg.backgroundColor,
+    backgroundColor: 'white',
     shadowOffset: {
       width: 0,
       height: 5,
     },
     shadowOpacity: 0.91,
     shadowRadius: 10,
-    elevation: 15,
+    elevation: 10,
     zIndex: 1000,
   },
   submitBtn: {
-    color: 'white',
+    color: 'black',
+    // backgroundColor: 'salmon'
   }
 })
