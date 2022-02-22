@@ -2,11 +2,24 @@ import React from 'react'
 import { StyleSheet, Image, TouchableOpacity, Text } from 'react-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 
-export default function Undo({ clearState, colorScheme, marginTop }) {
+import { useResetRecoilState, useRecoilValue } from 'recoil'
+import { ingredientsState, userIngredientsState } from '../store/atoms/globals'
+import { colorSchemeState } from '../store/atoms/settings'
+
+export default function Undo({ marginTop }) {
+
+  const resetIngredients = useResetRecoilState(ingredientsState)
+  const resetUserIngredients = useResetRecoilState(userIngredientsState)
+  const colorScheme = useRecoilValue(colorSchemeState)
+
+  const clearStates = () => {
+    resetIngredients()
+    resetUserIngredients()
+  }
 
   return (
     <TouchableOpacity
-      onPress={clearState}
+      onPress={clearStates}
       style={[ GlobalStyles.row, styles.undo, { marginTop: marginTop } ]}
     >
       <Text style={[ GlobalStyles.mediumText, { color: colorScheme === 'dark' ? GlobalStyles.fourthColor.color : 'grey' } ]}>

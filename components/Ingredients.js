@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import PageHead from '../components/PageHead'
 
-export default function Ingredients({
-  category,
-  userIngredients,
-  handleIngredientPick,
-  colorScheme,
-  windowHeight,
-  setCurrentLocation,
-  state
-}) {
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { categoryState, ingredientsState, userIngredientsState } from '../store/atoms/globals'
+import { currentLocationState, colorSchemeState, windowHeightState } from '../store/atoms/settings'
+
+export default function Ingredients({ handleIngredientPick }) {
+
+  const category = useRecoilValue(categoryState)
+  const ingredients = useRecoilValue(ingredientsState)
+  const userIngredients = useRecoilValue(userIngredientsState)
+  const colorScheme = useRecoilValue(colorSchemeState)
+  const windowHeight = useRecoilValue(windowHeightState)
 
   const { pathname } = useLocation()
+  const setCurrentLocation = useSetRecoilState(currentLocationState)
 
   useEffect(() => {
     setCurrentLocation(pathname)
@@ -25,7 +28,7 @@ export default function Ingredients({
 
       <PageHead title={category.question !== null && category.question} />
 
-      {state[category.name].length >= 1 &&
+      {ingredients[category.name].length >= 1 &&
         <Link
           to='/inventory'
           style={styles.validate}

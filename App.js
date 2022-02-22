@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react'
-// import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, ScrollView, Appearance, StatusBar, Dimensions } from 'react-native';
+import { StyleSheet, View, ScrollView, Appearance, StatusBar, Dimensions, LogBox } from 'react-native';
 import { NativeRouter, Routes, Route } from "react-router-native";
 // import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GlobalStyles } from './styles/GlobalStyles';
-import { formData } from './data'
-import Salt from './assets/icons/salt.png'
-import Pepper from './assets/icons/pepper.png'
+
 import Consent from './components/Consent'
 import Inventory from './components/Inventory';
 import Ingredients from './components/Ingredients';
@@ -18,8 +15,28 @@ import Home from './components/Home';
 import Cart from './components/Cart';
 import Recipe from './components/Recipe';
 
-export default function App() {
+import { RecoilRoot } from 'recoil'
+import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
+import { ingredientsState, userIngredientsState, resultState, recipeState } from './store/atoms/globals'
+import { colorSchemeState, windowHeightState } from './store/atoms/settings';
+
+export default function RecoilApp() {
+  return (
+    <RecoilRoot>
+      <App />
+    </RecoilRoot>
+  )
+}
+
+function App() {
+
+  LogBox.ignoreLogs(['Setting a timer for a long period of time'])
+
   const colorScheme = Appearance.getColorScheme()
+  const setColorScheme = useSetRecoilState(colorSchemeState)
+
+  const windowHeight = Dimensions.get('window').height
+  const setWindowHeight = useSetRecoilState(windowHeightState)
 
   const getData = async () => {
     try {
@@ -40,48 +57,25 @@ export default function App() {
       console.log('user consent rules')
       setHasConsent(res)
     })
+
+    setColorScheme(colorScheme)
+    setWindowHeight(windowHeight)
   }, [])
 
-  // const windowWidth = Dimensions.get('window').width
-  const windowHeight = Dimensions.get('window').height
-
+  /* // TODO //
+     create tutorial instead
+  */
   const [isMoreInfoHidden, setIsMoreInfoHidden] = useState(true)
   const [hasConsent, setHasConsent] = useState(false)
-  const [dataItems, setDataItems] = useState(formData)
-  const [category, setCategory] = useState(null)
-  const [userIngredients, setUserIngredients] = useState([
-    { value: 'Sel', name: 'default', image: Salt, category: 'Les essentiels' },
-    { value: 'Poivre', name: 'default', image: Pepper, category: 'Les essentiels' }
-  ])
-  const [result, setResult] = useState(null)
-  const [recipe, setRecipe] = useState()
-  const [isStateClear, setIsStateClear] = useState(false)
-  const [currentLocation, setCurrentLocation] = useState('/')
 
-  const [state, setState] = useState({
-    hasStarchyFoods: false,
-    hasMeat: false,
-    hasFish: false,
-    hasProteins: false,
-    hasVegetables: false,
-    hasDairy: false,
-    hasCondiments: false,
-    hasSpices: false,
-    hasHerbs: false,
-    starchyFoods: [],
-    meat: [],
-    fish: [],
-    proteins: [],
-    vegetables: [],
-    dairy: [],
-    condiments: [],
-    spices: [],
-    herbs: [],
-  })
-  // console.log('state :', state);
+  // recoil states
+  const [ingredients, setIngredients] = useRecoilState(ingredientsState) // initially named state
+  const [userIngredients, setUserIngredients] = useRecoilState(userIngredientsState)
+  const result = useRecoilValue(resultState)
+  const recipe = useRecoilValue(recipeState)
 
+  // update userIngredients recoil's atom
   const handleIngredientPick = (categoryName, booleanName, ingredient) => {
-
     if (userIngredients.includes(ingredient)) {
       // remove ingredient
       const updatedUserIngredients = userIngredients.filter(ing => ing !== ingredient)
@@ -94,188 +88,90 @@ export default function App() {
 
     dispatchToState(categoryName, booleanName, ingredient)
   }
-
+  // update ingredients recoil's atom
   const dispatchToState = (categoryName, booleanName, value) => {
     const key = categoryName,
           booleanKey = booleanName;
 
-    const isAlreadyInState = state[key].includes(value)
+    const isAlreadyInState = ingredients[key].includes(value)
 
     if (isAlreadyInState) {
-      console.log('MODIFYING // ingredient', value, 'already present in', key);
-      const updatedStateKey = state[key].filter(el => el !== value)
-      setState({
-        ...state,
+      // console.log('MODIFYING // ingredient', value, 'already present in', key);
+      const updatedStateKey = ingredients[key].filter(el => el !== value)
+      setIngredients({
+        ...ingredients,
         [key]: [...updatedStateKey],
-        [booleanKey]: updatedStateKey.length >= 1 ? true : !state[booleanKey]
+        [booleanKey]: updatedStateKey.length >= 1 ? true : !ingredients[booleanKey]
       })
       console.log('***STATE UPDATE*** , ingredient', value, 'removed in', key, updatedStateKey);
     }
 
     if (!isAlreadyInState) {
-      setState({
-        ...state,
-        [key]: [ ...state[key], value ],
-        [booleanKey]: state[key].length >= 1 ? true : !state[booleanKey]
+      setIngredients({
+        ...ingredients,
+        [key]: [ ...ingredients[key], value ],
+        [booleanKey]: ingredients[key].length >= 1 ? true : !ingredients[booleanKey]
       })
 
       console.log(
         '***STATE UPDATE***',
-        value.value, 'added to:', key, [ ...state[key], value ],
-        booleanKey, 'set to:', state[key].length >= 1 ? true : !state[booleanKey]
+        value.value, 'added to:', key, [ ...ingredients[key], value ],
+        booleanKey, 'set to:', ingredients[key].length >= 1 ? true : !ingredients[booleanKey]
       );
     }
   }
-
-  const clearState = () => {
-    setCurrentLocation('/')
-    setCategory(null)
-    setUserIngredients([
-      { value: 'Sel', name: 'default', image: Salt, category: 'Les essentiels' },
-      { value: 'Poivre', name: 'default', image: Pepper, category: 'Les essentiels' }
-    ])
-    setResult(null)
-    setState({
-      hasStarchyFoods: false,
-      hasMeat: false,
-      hasFish: false,
-      hasProteins: false,
-      hasVegetables: false,
-      hasDairy: false,
-      hasCondiments: false,
-      hasSpices: false,
-      hasHerbs: false,
-      starchyFoods: [],
-      meat: [],
-      fish: [],
-      proteins: [],
-      vegetables: [],
-      dairy: [],
-      condiments: [],
-      spices: [],
-      herbs: [],
-    })
-    setIsStateClear(true)
-  }
-
-  useEffect(() => {
-    console.log('state :', state);
-  }, [state])
-
-  // useEffect(() => {
-  //   console.log('category :', category);
-  // }, [category])
-
-  //  useEffect(() => {
-  //   isStateClear && console.log('*** state cleared ***')
-  // }, [isStateClear])
 
   return (
     // <LinearGradient
     //     colors={['rgba(0,0,0,1)', 'rgba(37,31,193,1)']}
     //     style={styles.background}
     //   >
-    <NativeRouter>
+      <NativeRouter>
+        <ScrollView contentContainerStyle={[styles.container]}>
+          <View style={styles.main}>
 
-      <ScrollView contentContainerStyle={[styles.container]}>
+            <Routes>
+              <Route exact path='/'
+                element={
+                  <>
+                    {!hasConsent &&
+                      <Consent
+                        isMoreInfoHidden={isMoreInfoHidden}
+                        setIsMoreInfoHidden={setIsMoreInfoHidden}
+                      />
+                    }
+                    <Home />
+                  </>
+                }
+              />
+              <Route exact path='/inventory' element={ <Inventory /> }/>
+              <Route exact path='/inventory/ingredients' element={ <Ingredients handleIngredientPick={handleIngredientPick} /> } />
+              <Route exact path='/cart' element={ <Cart /> } />
+              <Route exact path='/result' element={ <Result /> } />
+              <Route exact path='/result/:id' element={ recipe && <Recipe /> } />
+            </Routes>
 
-        <View style={styles.main}>
+          </View>
+          <StatusBar style="auto" />
+        </ScrollView>
 
-          <Routes>
-            <Route exact path='/'
-              element={
-                <>
-                  {!hasConsent &&
-                    <Consent
-                      isMoreInfoHidden={isMoreInfoHidden}
-                      setIsMoreInfoHidden={setIsMoreInfoHidden}
-                    />
-                  }
-                  <Home windowHeight={windowHeight} colorScheme={colorScheme} />
-                </>
-              }
-            />
-            <Route exact path='/inventory'
-              element={
-                hasConsent &&
-                  <Inventory
-                    dataItems={dataItems}
-                    setCurrentLocation={setCurrentLocation}
-                    setCategory={setCategory}
-                    userIngredients={userIngredients}
-                    state={state}
-                    clearState={clearState}
-                    colorScheme={colorScheme}
-                  />
-              }
-            />
-            <Route exact path='/inventory/ingredients'
-              element={
-                <Ingredients
-                  category={category}
-                  userIngredients={userIngredients}
-                  handleIngredientPick={handleIngredientPick}
-                  colorScheme={colorScheme}
-                  windowHeight={windowHeight}
-                  setCurrentLocation={setCurrentLocation}
-                  state={state}
-                />
-              }
-            />
-            <Route exact path='/cart'
-              element={
-                <Cart
-                  setCurrentLocation={setCurrentLocation}
-                  clearState={clearState}
-                  userIngredients={userIngredients}
-                  colorScheme={colorScheme}
-                  dataItems={dataItems}
-                />
-              }
-            />
-            <Route exact path='/result'
-              element={
-                <Result result={result} colorScheme={colorScheme} setCurrentLocation={setCurrentLocation} setRecipe={setRecipe} />
-              }
-            />
-            <Route exact path='/result/:id'
-              element={
-                recipe && <Recipe recipe={recipe} setCurrentLocation={setCurrentLocation} />
-              }
-            />
-          </Routes>
+        {userIngredients.length > 5 && (result === null || result.status === 'Error') &&
+          <Submit />
+        }
 
+        <View style={styles.footer}>
+          <Nav />
         </View>
 
-        <StatusBar style="auto" />
-      </ScrollView>
+      </NativeRouter>
 
-
-      {userIngredients.length > 5 && (result === null || result.status === 'Error') &&
-        <Submit state={state} userIngredients={userIngredients} setResult={setResult} colorScheme={colorScheme} />
-      }
-
-      <View style={styles.footer}>
-        <Nav colorScheme={colorScheme} clearState={clearState} result={result} currentLocation={currentLocation} />
-      </View>
-
-    </NativeRouter>
     // </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // width: '100%',
-    // height: '100%',
-    // flexDirection: 'column',
-    // alignItems: 'center',
-    // justifyContent: 'space-between',
-    // paddingTop: StatusBar.currentHeight ,
     paddingHorizontal: 10,
-    // backgroundColor: 'white',
-    // backgroundColor: 'green',
     color: 'black',
     zIndex: -1
   },
@@ -290,9 +186,7 @@ const styles = StyleSheet.create({
   main: {
     width: '100%',
     height: '100%',
-    // flex: 1,
     marginTop: 20,
-    // backgroundColor: 'green'
   },
   footer: {
     alignItems: 'center',

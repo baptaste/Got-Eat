@@ -4,14 +4,26 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useNavigate } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 
-export default function Submit({ state, userIngredients, setResult, colorScheme }) {
+import { useSetRecoilState, useRecoilValue } from 'recoil'
+import { resultState, ingredientsState, userIngredientsState } from '../store/atoms/globals'
+import { colorSchemeState } from '../store/atoms/settings'
+
+export default function Submit() {
 
   const navigate = useNavigate()
+
+  const setResult = useSetRecoilState(resultState)
+  const ingredients = useRecoilValue(ingredientsState)
+  const userIngredients = useRecoilValue(userIngredientsState)
+  const colorScheme = useRecoilValue(colorSchemeState)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     const ingredientsToString = userIngredients.map(item => item.value.toLowerCase())
-    const userData = { ...state, ingredientsToString }
+    const userData = {
+      ...ingredients,
+      ingredientsToString
+    }
 
     try {
       const res = await axios.post(

@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import GoBack from '../components/GoBack'
 
-export default function Recipe({ setCurrentLocation, recipe }) {
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { recipeState } from '../store/atoms/globals'
+import { currentLocationState } from '../store/atoms/settings'
+
+export default function Recipe() {
+
   const { pathname } = useLocation()
+  const setCurrentLocation = useSetRecoilState(currentLocationState)
+  const recipe = useRecoilValue(recipeState)
 
   useEffect(() => {
     setCurrentLocation(pathname)
@@ -21,22 +28,22 @@ export default function Recipe({ setCurrentLocation, recipe }) {
         </Text>
       </View>
 
-      <Text style={[GlobalStyles.bigText, { marginVertical: 20 }]}>
+      <Text style={[GlobalStyles.veryBigText, { marginVertical: 20, color: GlobalStyles.secondColor.color }]}>
         Tes ingredients pour cette recette
       </Text>
 
       <View style={styles.ingredients}>
         {recipe.ingredients.map((text, index) => (
           <View  key={text + index} style={styles.ingredientItem}>
-            <Text key={text} style={[styles.ingredientText, GlobalStyles.textBold, { color: 'black' }]}>
+            <Text key={text} style={[styles.ingredientText, GlobalStyles.mediumText, GlobalStyles.textBold, { color: 'black' }]}>
               {text}
             </Text>
           </View>
         ))}
       </View>
 
-      <Text style={[GlobalStyles.bigText, { marginVertical: 20 }]}>
-        Pour la préparation
+      <Text style={[GlobalStyles.veryBigText, { marginVertical: 20, color: GlobalStyles.secondColor.color }]}>
+        Préparation
       </Text>
     </>
   )

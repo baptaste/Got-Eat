@@ -1,23 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, View, Text, Image } from 'react-native'
 import { useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import PageHead from '../components/PageHead'
 import Undo from '../components/Undo'
 import _ from 'lodash'
 
-export default function Cart({ setCurrentLocation, clearState, userIngredients, colorScheme, dataItems }) {
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { dataItemsState, userIngredientsState } from '../store/atoms/globals'
+import { currentLocationState, colorSchemeState } from '../store/atoms/settings'
+import { filteredDataItemsState } from '../store/selectors/selectors'
+
+export default function Cart() {
+
+  const storeDataItems = useRecoilValue(dataItemsState)
+  const userIngredients = useRecoilValue(userIngredientsState)
+  const colorScheme = useRecoilValue(colorSchemeState)
+
+  /* TODO */
+  // const filteredIngredients = useRecoilValue(filteredDataItemsState)
 
   const { pathname } = useLocation()
+  const setCurrentLocation = useSetRecoilState(currentLocationState)
+
   const [filteredIngredients, setFilteredIngredients] = useState([])
 
-  useEffect(() => {
-    setCurrentLocation(pathname)
-    getFilteredIngredients()
-  }, [userIngredients])
-
   const getFilteredIngredients = () => {
-    let deepDataItemsCopy = _.cloneDeep(dataItems)
+    let deepDataItemsCopy = _.cloneDeep(storeDataItems)
 
     deepDataItemsCopy = deepDataItemsCopy.filter(category => {
       const matchingCategories = []
@@ -45,6 +54,11 @@ export default function Cart({ setCurrentLocation, clearState, userIngredients, 
     setFilteredIngredients(deepDataItemsCopy)
   }
 
+  useEffect(() => {
+    setCurrentLocation(pathname)
+    getFilteredIngredients()
+  }, [userIngredients])
+
   return (
 
     <View style={styles.cartScreen}>
@@ -55,7 +69,7 @@ export default function Cart({ setCurrentLocation, clearState, userIngredients, 
       </Text>
 
       {userIngredients.length >= 3 &&
-        <Undo clearState={clearState} colorScheme={colorScheme} marginTop={10}
+        <Undo marginTop={10}
       />}
 
 
@@ -71,9 +85,9 @@ export default function Cart({ setCurrentLocation, clearState, userIngredients, 
                 source={ingredient.image}
                 accessibilityLabel={ingredient.value}
                 style={{ width: 40, height: 40, marginBottom: 10 }}
-                tintColor={GlobalStyles.fourthColor.color}
+                tintColor={colorScheme === 'dark' ? 'white' : 'black'}
               />
-              <Text style={[GlobalStyles.smallText, GlobalStyles.textBold, GlobalStyles.textCenter, { color: GlobalStyles.fourthColor.color }]}>
+              <Text style={[GlobalStyles.smallText, GlobalStyles.textBold, GlobalStyles.textCenter, { color: colorScheme === 'dark' ? 'white' : 'black' }]}>
                 {ingredient.value}
               </Text>
             </View>
@@ -97,11 +111,11 @@ export default function Cart({ setCurrentLocation, clearState, userIngredients, 
                   source={ingredient.image}
                   accessibilityLabel={ingredient.value}
                   style={{ width: 40, height: 40, marginBottom: 10 }}
-                  tintColor={GlobalStyles.fourthColor.color}
+                  tintColor={colorScheme === 'dark' ? 'white' : 'black'}
                 />
                 <Text
                   style={[GlobalStyles.smallText, GlobalStyles.textBold, GlobalStyles.textCenter,
-                  { color: GlobalStyles.fourthColor.color }]}
+                  { color: colorScheme === 'dark' ? 'white' : 'black' }]}
                 >
                   {ingredient.value}
                 </Text>

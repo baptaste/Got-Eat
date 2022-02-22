@@ -1,9 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Link } from 'react-router-native'
+import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 
-export default function Home({ windowHeight, colorScheme }) {
+import { useSetRecoilState, useRecoilValue } from 'recoil'
+import { currentLocationState, colorSchemeState, windowHeightState } from '../store/atoms/settings'
+
+export default function Home() {
+
+  const { pathname } = useLocation()
+  const setCurrentLocation = useSetRecoilState(currentLocationState)
+  const colorScheme = useRecoilValue(colorSchemeState)
+  const windowHeight = useRecoilValue(windowHeightState)
+
+  useEffect(() => {
+    setCurrentLocation(pathname)
+  }, [])
 
   return (
     <View style={{ height: windowHeight - 110 }}>
@@ -30,7 +42,7 @@ export default function Home({ windowHeight, colorScheme }) {
           </>
         </Link>
 
-        <Link to='/result' style={[styles.contentItem, { backgroundColor: 'black', shadowColor: colorScheme === 'dark' ? 'grey' : 'black' }]}>
+        <Link to='/result' style={[styles.contentItem, { backgroundColor: '#212227', shadowColor: colorScheme === 'dark' ? 'grey' : 'black' }]}>
           <>
             <Text style={[GlobalStyles.bigText, GlobalStyles.whiteText]}>Mon carnet perso</Text>
             <Text style={[GlobalStyles.mediumText, GlobalStyles.whiteText, { width: '80%' }]}>
@@ -66,12 +78,12 @@ const styles = StyleSheet.create({
     // borderWidth: 3,
     padding: 20,
     marginBottom: 32,
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.51,
-    shadowRadius: 15,
-    elevation: 15,
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 5,
+    // },
+    // shadowOpacity: 0.51,
+    // shadowRadius: 15,
+    // elevation: 15,
   },
 })

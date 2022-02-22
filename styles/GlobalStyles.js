@@ -50,20 +50,24 @@ export const GlobalStyles = StyleSheet.create({
   // light blue
   secondBg: {
     // backgroundColor: 'hsl(242, 72%, 44%)'
-    backgroundColor: '#00a86b' // jade
+    // backgroundColor: '#00a86b' // jade
+    backgroundColor: '#F9564F' // very nice red orange
   },
   secondColor: {
   //  color: 'hsl(242, 72%, 44%)',
-    color: '#00a86b'
+    // color: '#00a86b' // jade
+    color: '#F9564F' // very nice red orange
   },
   // very dark blue (almost black)
   thirdBg: {
     // backgroundColor: 'hsl(242, 72%, 6%)',
-    backgroundColor: 'hsl(158, 100%, 9%)'  // dark jade
+    // backgroundColor: 'hsl(158, 100%, 9%)'  // dark jade
+    backgroundColor: 'hsl(2, 93%, 30%)'
   },
   thirdColor: {
     // color: 'hsl(242, 72%, 6%)',
-    color: 'hsl(158, 100%, 13%)' // dark jade
+    // color: 'hsl(158, 100%, 13%)' // dark jade
+    color: '#F9564F' // very nice red orange
   },
   // light grey
   fourthBg: {

@@ -1,6 +1,6 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import { Link, useNavigate } from 'react-router-native'
+import { StyleSheet, Text, View, Image } from 'react-native'
+import { Link } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 
 import Home from '../assets/icons/home-light.png'
@@ -8,13 +8,20 @@ import Recipes from '../assets/icons/recipe-chef.png'
 import Inventory from '../assets/icons/shopping-list.png'
 import Cart from '../assets/icons/shopping-basket.png'
 
-export default function Nav({ colorScheme, clearState, currentLocation, result }) {
+import { useRecoilValue } from 'recoil'
+import { currentLocationState, colorSchemeState } from '../store/atoms/settings'
+
+export default function Nav() {
+
   const routes = [
     { path: '/', icon: Home, name: 'Accueil' },
     { path: '/inventory', icon: Inventory, name: 'Inventaire' },
     { path: '/cart', icon: Cart, name: 'Ingrédients' },
     { path: '/result', icon: Recipes, name: 'Recettes' },
   ]
+
+  const currentLocation = useRecoilValue(currentLocationState)
+  const colorScheme = useRecoilValue(colorSchemeState)
 
   return (
     <View style={[styles.nav]}>
@@ -41,7 +48,7 @@ export default function Nav({ colorScheme, clearState, currentLocation, result }
               }
             ]}
             >
-                {name}
+              {name}
             </Text>
           </View>
         </Link>

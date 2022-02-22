@@ -3,8 +3,12 @@ import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import Undo from '../components/Undo'
 import Close from '../assets/icons/cancel.png'
+import { useRecoilValue } from 'recoil'
+import { userIngredientsState } from '../store/atoms/globals'
 
-export default function CartModal({ clearState, userIngredients, handleCartButtonPress, colorScheme }) {
+export default function CartModal({ clearState, handleCartButtonPress, colorScheme }) {
+
+  const userIngredients = useRecoilValue(userIngredientsState)
 
   return (
        <View style={[styles.cartBlock, GlobalStyles.fourthBg]}>
@@ -41,7 +45,7 @@ export default function CartModal({ clearState, userIngredients, handleCartButto
        </TouchableOpacity>
 
        {userIngredients.length >= 3 &&
-         <Undo clearState={clearState} colorScheme={colorScheme} marginTop={32}
+         <Undo colorScheme={colorScheme} marginTop={32}
        />}
 
      </View>

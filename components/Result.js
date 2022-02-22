@@ -1,14 +1,22 @@
 import React, { useEffect } from 'react'
-import axios from 'axios'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, Image } from 'react-native'
 import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import PageHead from '../components/PageHead'
 import RightArrow from '../assets/icons/right-arrow.png'
-import { backgroundColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes'
 
-export default function Result({ result, colorScheme, setCurrentLocation, setRecipe }) {
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { resultState, recipeState } from '../store/atoms/globals'
+import { currentLocationState, colorSchemeState } from '../store/atoms/settings'
+
+export default function Result() {
+
   const { pathname } = useLocation()
+  const result = useRecoilValue(resultState)
+  const colorScheme = useRecoilValue(colorSchemeState)
+  const setCurrentLocation = useSetRecoilState(currentLocationState)
+  const setRecipe = useSetRecoilState(recipeState)
+
   useEffect(() => {
     setCurrentLocation(pathname)
   }, [])

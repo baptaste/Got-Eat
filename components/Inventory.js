@@ -1,18 +1,39 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, LogBox } from 'react-native'
 import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
-import CartIcon from '../assets/icons/shopping-basket.png'
+
 import PageHead from '../components/PageHead'
 import CartModal from '../components/CartModal'
+
+import CartIcon from '../assets/icons/shopping-basket.png'
 import Checked from '../assets/icons/checked.png'
 
-export default function Inventory({ dataItems, setCategory, clearState, setCurrentLocation, userIngredients, state, colorScheme }) {
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { dataItemsState, categoryState, ingredientsState, userIngredientsState } from '../store/atoms/globals'
+import { currentLocationState, colorSchemeState } from '../store/atoms/settings'
+
+export default function Inventory({ clearState }) {
+
+  LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 
   const { pathname } = useLocation()
+  const setCurrentLocation = useSetRecoilState(currentLocationState)
+
+  const colorScheme = useRecoilValue(colorSchemeState)
 
   const [isCartActive, setIsCartActive] = useState(false)
   const handleCartButtonPress = () => setIsCartActive(!isCartActive)
+
+  const storeDataItems = useRecoilValue(dataItemsState)
+  const ingredients = useRecoilValue(ingredientsState)
+  const userIngredients = useRecoilValue(userIngredientsState)
+
+  const setCategory = useSetRecoilState(categoryState)
+
+  const handleCategoryPress = (category) => {
+    setCategory(category)
+  }
 
   useEffect(() => {
     setCurrentLocation(pathname)
@@ -46,18 +67,18 @@ export default function Inventory({ dataItems, setCategory, clearState, setCurre
 
       <View style={styles.inventoryList}>
 
-        {dataItems.map((item, index) => (
+        {storeDataItems.map((item, index) => (
 
           <Link
-            onPress={() => setCategory(item)}
+            onPress={() => handleCategoryPress(item)}
             to='/inventory/ingredients'
             key={item.id}
-            style={state[item.boolean.name] ?
+            style={ingredients[item.boolean.name] ?
               [styles.inventoryItem, styles.completed] : [GlobalStyles.secondBg, styles.inventoryItem]}
           >
             <>
               <Text
-                style={state[item.boolean.name] ?
+                style={ingredients[item.boolean.name] ?
                 [ styles.completed,
                   GlobalStyles.mediumText,
                   GlobalStyles.textBold,
@@ -71,7 +92,7 @@ export default function Inventory({ dataItems, setCategory, clearState, setCurre
               >
                 {item.label}
               </Text>
-              {state[item.boolean.name] &&
+              {ingredients[item.boolean.name] &&
                 <Image
                   source={Checked}
                   style={[styles.checked, GlobalStyles.fithTintColor]}

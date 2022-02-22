@@ -2,7 +2,7 @@ import React from 'react'
 import { Image, TouchableOpacity } from 'react-native'
 import { useNavigate } from 'react-router-native'
 
-export default function GoBack({ pathname }) {
+export default function GoBack() {
   const navigate = useNavigate()
 
   return (
