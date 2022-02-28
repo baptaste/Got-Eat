@@ -45,12 +45,24 @@ export const userIngredientsState = atom({
   ]
 })
 
+export const ingredientsPickedState = atom({
+  key: 'ingredientsPickedState',
+  default: 0
+})
+
+// either Error obj, OR Success arr with recipe(s)
 export const resultState = atom({
   key: 'resultState',
   default: null
 })
 
-export const recipeState = atom({
-  key: 'recipeState',
+// set result recipe in List if user consulted it (!isNew)
+export const recipeListState = atom({
+  key: 'recipeListState',
+  default: []
+})
+
+export const currentRecipeState = atom({
+  key: 'currentRecipeState',
   default: null
 })

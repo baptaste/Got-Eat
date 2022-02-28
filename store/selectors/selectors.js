@@ -1,38 +1,51 @@
+import axios from 'axios'
 import { selector } from 'recoil'
-import { dataItemsState, userIngredientsState } from '../atoms/globals'
+import { dataItemsState, userIngredientsState, resultState, ingredientsState, recipeListState } from '../atoms/globals'
+import { hasSubmitState } from '../atoms/settings'
 
-export const filteredDataItemsState = selector({
-  key: 'filteredDataItemsState',
-  get: ({ get }) => {
-    /* TODO */
-    const initialDataItems = get(dataItemsState)
-    const userIngredients = get(userIngredientsState)
+// either Error obj, OR Success arr with recipe(s)
+export const recipeQueryState = selector({
+  key: 'recipeQueryState',
+  get: async ({ get }) => {
+    const hasSubmit = get(hasSubmitState)
+    const ingredients = get(ingredientsState)
+    const ingredientsToString = get(userIngredientsState).map(item => item.value.toLowerCase())
+    const recipeList = get(recipeListState)
 
-    let filteredDataItems = [...initialDataItems]
+    const userData = { ...ingredients, ingredientsToString }
 
-    filteredDataItems = filteredDataItems.filter(category => {
-      let matchingCategories = []
+    if (hasSubmit) {
+      try {
+        console.log('fetching data...');
+        const res = await axios.get('http://192.168.1.33:3000/getRecipes/', { params: userData })
+        // const resultRecipes = [...res.data.recipes]
+        // console.log('SELECTOR resultRecipes :', resultRecipes);
+        // console.log('SELECTOR recipeList :', recipeList);
 
-      userIngredients.forEach(ingredient => {
-        if (category.name === ingredient.name) matchingCategories.push(category)
-      })
+        // const isAlreadyInState = recipeList.filter(stateRecipe => {
+        //   let foundRecipe;
 
-      if (matchingCategories.length !== 0) return matchingCategories
-    })
+        //   resultRecipes.forEach(recipe => {
+        //     if (recipe === stateRecipe) {
+        //       console.log('recipe === stateRecipe MATCH ', recipe === stateRecipe);
+        //       foundRecipe = stateRecipe
+        //     }
+        //   })
 
-    filteredDataItems = filteredDataItems.filter(category => {
-      let matchingIngredients = []
+        //   if (resultRecipes.includes(stateRecipe)) {
+        //     console.log('resultRecipes.includes(stateRecipe) MATCH ', resultRecipes.includes(stateRecipe));
+        //     foundRecipe = stateRecipe
+        //   }
 
-      category.options.map(option => {
-        userIngredients.forEach(ingredient => {
-          if (option.value === ingredient.value) matchingIngredients.push(ingredient)
-        })
-      })
+        //   return foundRecipe
+        // })
 
-      category.options = matchingIngredients
-      return matchingIngredients
-    })
+        // console.log('isAlreadyInState ? ', isAlreadyInState);
 
-    return filteredDataItems
+        return res.data
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 })

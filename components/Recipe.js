@@ -5,14 +5,17 @@ import { GlobalStyles } from '../styles/GlobalStyles'
 import GoBack from '../components/GoBack'
 
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { recipeState } from '../store/atoms/globals'
+import { currentRecipeState, recipeListState, resultState } from '../store/atoms/globals'
 import { currentLocationState } from '../store/atoms/settings'
 
 export default function Recipe() {
 
   const { pathname } = useLocation()
   const setCurrentLocation = useSetRecoilState(currentLocationState)
-  const recipe = useRecoilValue(recipeState)
+  const recipe = useRecoilValue(currentRecipeState)
+  // console.log('currentRecipeState :', recipe);
+  // const recipeList = useRecoilValue(recipeListState)
+  // const result = useRecoilValue(resultState)
 
   useEffect(() => {
     setCurrentLocation(pathname)

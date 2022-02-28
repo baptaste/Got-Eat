@@ -1,56 +1,52 @@
-import React from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react'
+// import axios from 'axios'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useNavigate } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 
-import { useSetRecoilState, useRecoilValue } from 'recoil'
-import { resultState, ingredientsState, userIngredientsState } from '../store/atoms/globals'
-import { colorSchemeState } from '../store/atoms/settings'
+import { useSetRecoilState, useRecoilValue, useRecoilState, useResetRecoilState } from 'recoil'
+import { resultState, ingredientsPickedState } from '../store/atoms/globals'
+import { colorSchemeState, isLoadingState, isLookingForMoreState, hasSubmitState } from '../store/atoms/settings'
+import { recipeQueryState } from '../store/selectors/selectors'
 
 export default function Submit() {
 
   const navigate = useNavigate()
-
-  const setResult = useSetRecoilState(resultState)
-  const ingredients = useRecoilValue(ingredientsState)
-  const userIngredients = useRecoilValue(userIngredientsState)
+  const [result, setResult] = useRecoilState(resultState)
+  const resetIsLookingForMoreValue = useResetRecoilState(isLookingForMoreState)
+  const recipeQuery = useRecoilValue(recipeQueryState)
+  // const setIsLoading = useSetRecoilState(isLoadingState)
+  const [hasSubmit, setHasSubmit] = useRecoilState(hasSubmitState)
   const colorScheme = useRecoilValue(colorSchemeState)
 
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    const ingredientsToString = userIngredients.map(item => item.value.toLowerCase())
-    const userData = {
-      ...ingredients,
-      ingredientsToString
-    }
+  const resetTotalIngredientsPicked = useResetRecoilState(ingredientsPickedState)
 
-    try {
-      const res = await axios.post(
-        // 'http://10.0.2.2:3000/search/',
-        'http://192.168.1.33:3000/search/',
-        userData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: 'application/json'
-          },
-        }
-      );
-
-      // console.log('response :', res);
-
-      if (res.status === 200) {
-        setResult(res.data)
-        navigate('/result')
-      }
-    } catch (error) {
-      console.log(error)
-    }
+  const handleSubmitPress = () => {
+    console.log('handleSubmitPress');
+    setHasSubmit(true) // recipeQueryState is evaluated
   }
 
+  const handleResponse = () => {
+    console.log('handleResponse');
+    // setIsLoading(true)
+    // console.log('recipeQuery ==> result :', recipeQuery);
+    setResult(recipeQuery)
+    resetTotalIngredientsPicked()
+    resetIsLookingForMoreValue()
+    navigate('/result')
+  }
+
+  useEffect(() => {
+    if (hasSubmit) {
+      console.log('useEffect, hasSubmit value :', hasSubmit);
+      handleResponse()
+    }
+  }, [hasSubmit])
+
   return (
-    <TouchableOpacity onPress={handleSubmit} style={[styles.submit, { shadowColor: colorScheme === 'dark' ? '#ddd' : 'hsl(158, 100%, 13%)' }]}>
+    <TouchableOpacity onPress={handleSubmitPress}
+      style={[styles.submit, { shadowColor: colorScheme === 'dark' ? '#ddd' : GlobalStyles.secondBg.backgroundColor }]}
+    >
       <Text style={[styles.submitBtn, GlobalStyles.bigText]}>GO</Text>
     </TouchableOpacity>
   )

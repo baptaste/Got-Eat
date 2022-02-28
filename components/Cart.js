@@ -6,16 +6,18 @@ import PageHead from '../components/PageHead'
 import Undo from '../components/Undo'
 import _ from 'lodash'
 
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil'
 import { dataItemsState, userIngredientsState } from '../store/atoms/globals'
 import { currentLocationState, colorSchemeState } from '../store/atoms/settings'
-import { filteredDataItemsState } from '../store/selectors/selectors'
+import { totalIngredientsListState } from '../store/selectors/selectors'
 
 export default function Cart() {
 
   const storeDataItems = useRecoilValue(dataItemsState)
   const userIngredients = useRecoilValue(userIngredientsState)
   const colorScheme = useRecoilValue(colorSchemeState)
+
+  // const storedIngredientsList = useRecoilValue(totalIngredientsListState)
 
   /* TODO */
   // const filteredIngredients = useRecoilValue(filteredDataItemsState)
@@ -58,6 +60,8 @@ export default function Cart() {
     setCurrentLocation(pathname)
     getFilteredIngredients()
   }, [userIngredients])
+
+  // console.log('storedIngredientsList :', storedIngredientsList);
 
   return (
 

@@ -2,24 +2,32 @@ import React from 'react'
 import { StyleSheet, Image, TouchableOpacity, Text } from 'react-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 
-import { useResetRecoilState, useRecoilValue } from 'recoil'
-import { ingredientsState, userIngredientsState } from '../store/atoms/globals'
-import { colorSchemeState } from '../store/atoms/settings'
+import { useResetRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { ingredientsState, userIngredientsState, resultState } from '../store/atoms/globals'
+import { colorSchemeState, isLookingForMoreState } from '../store/atoms/settings'
 
 export default function Undo({ marginTop }) {
 
   const resetIngredients = useResetRecoilState(ingredientsState)
   const resetUserIngredients = useResetRecoilState(userIngredientsState)
   const colorScheme = useRecoilValue(colorSchemeState)
+  const result = useRecoilValue(resultState)
 
-  const clearStates = () => {
+  const setIsLookingForMore = useSetRecoilState(isLookingForMoreState)
+
+  const resetStates = () => {
     resetIngredients()
     resetUserIngredients()
+
+    if (result !== null) {
+      // user already found a recipe but is looking for more
+      setIsLookingForMore(true)
+    }
   }
 
   return (
     <TouchableOpacity
-      onPress={clearStates}
+      onPress={resetStates}
       style={[ GlobalStyles.row, styles.undo, { marginTop: marginTop } ]}
     >
       <Text style={[ GlobalStyles.mediumText, { color: colorScheme === 'dark' ? GlobalStyles.fourthColor.color : 'grey' } ]}>

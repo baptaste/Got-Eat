@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, ScrollView, Appearance, StatusBar, Dimensions, LogBox } from 'react-native';
+import React, { useState, useEffect, Suspense } from 'react'
+import { StyleSheet, View, Text, ScrollView, Appearance, StatusBar, Dimensions, LogBox } from 'react-native';
 import { NativeRouter, Routes, Route } from "react-router-native";
 // import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,8 +17,9 @@ import Recipe from './components/Recipe';
 
 import { RecoilRoot } from 'recoil'
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
-import { ingredientsState, userIngredientsState, resultState, recipeState } from './store/atoms/globals'
-import { colorSchemeState, windowHeightState } from './store/atoms/settings';
+import { ingredientsState, userIngredientsState, resultState, currentRecipeState, ingredientsPickedState, recipeListState } from './store/atoms/globals'
+import { colorSchemeState, windowHeightState, isLookingForMoreState, isLoadingState } from './store/atoms/settings';
+// import { totalIngredientsPickedState } from './store/selectors/selectors';
 
 export default function RecoilApp() {
   return (
@@ -71,8 +72,14 @@ function App() {
   // recoil states
   const [ingredients, setIngredients] = useRecoilState(ingredientsState) // initially named state
   const [userIngredients, setUserIngredients] = useRecoilState(userIngredientsState)
+  const [totalIngredientsPicked, setTotalIngredientsPicked] = useRecoilState(ingredientsPickedState)
+
   const result = useRecoilValue(resultState)
-  const recipe = useRecoilValue(recipeState)
+  const recipe = useRecoilValue(currentRecipeState)
+  const isLookingForMore = useRecoilValue(isLookingForMoreState)
+  const recipesList = useRecoilValue(recipeListState)
+  const isLoading = useRecoilValue(isLoadingState)
+  // const totalIngredientsPicked = useRecoilValue(totalIngredientsPickedState)
 
   // update userIngredients recoil's atom
   const handleIngredientPick = (categoryName, booleanName, ingredient) => {
@@ -80,10 +87,12 @@ function App() {
       // remove ingredient
       const updatedUserIngredients = userIngredients.filter(ing => ing !== ingredient)
       setUserIngredients([...updatedUserIngredients])
+      setTotalIngredientsPicked((n) => n - 1)
       console.log('ingredient', ingredient, 'has been removed from users ingredients.', updatedUserIngredients);
     } else {
       // add ingredient
       setUserIngredients([...userIngredients, ingredient])
+      setTotalIngredientsPicked((n) => n + 1)
     }
 
     dispatchToState(categoryName, booleanName, ingredient)
@@ -121,11 +130,25 @@ function App() {
     }
   }
 
+  /* TODO // remove this useless atom  */
+  // useEffect(() => {
+  //   console.log('isLookingForMore ? ', isLookingForMore);
+  // }, [isLookingForMore])
+
+  // useEffect(() => {
+  //   if (totalIngredientsPicked !== 0) console.log('totalIngredientsPicked :', totalIngredientsPicked);
+  // }, [totalIngredientsPicked])
+
+  // useEffect(() => {
+  //   if (recipesList.length !== 0) console.log('recipesList :', recipesList);
+  // }, [recipesList])
+
   return (
     // <LinearGradient
     //     colors={['rgba(0,0,0,1)', 'rgba(37,31,193,1)']}
     //     style={styles.background}
     //   >
+
       <NativeRouter>
         <ScrollView contentContainerStyle={[styles.container]}>
           <View style={styles.main}>
@@ -155,9 +178,14 @@ function App() {
           <StatusBar style="auto" />
         </ScrollView>
 
-        {userIngredients.length > 5 && (result === null || result.status === 'Error') &&
-          <Submit />
+        {(result === null && totalIngredientsPicked >= 3) &&
+          <Suspense fallback={<Text>Chargement</Text>}>
+            <Submit />
+          </Suspense>
         }
+
+
+        {/* {isLookingForMore && userIngredients.length > 5 && <Submit />} */}
 
         <View style={styles.footer}>
           <Nav />
