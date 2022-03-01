@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Image, ScrollView } from 'react-native'
 import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../../styles/GlobalStyles'
 
 import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil'
-import { resultState, recipeListState } from '../../store/atoms/globals'
+import { resultState, recipeListState, ingredientsState, userIngredientsState } from '../../store/atoms/globals'
 import { currentLocationState, colorSchemeState, hasSubmitState } from '../../store/atoms/settings'
 
 import PageHead from '../PageHead'
 import ResultArea from './ResultArea'
 import RecipeList from './RecipeList'
+// import AddMore from '../Buttons/AddMore'
 
 export default function Result() {
 
@@ -26,7 +27,7 @@ export default function Result() {
   }, [])
 
   return (
-    <View style={styles.result}>
+    <ScrollView contentContainerStyle={[styles.result]}>
 
       <PageHead title='Recettes' />
 
@@ -44,12 +45,13 @@ export default function Result() {
             </Link>
         </View>
       }
-      {/* TODO // add button to start new inventory */}
+
+      {/* <AddMore /> */}
 
       {result !== null && <ResultArea />}
       {recipesList.length !== 0 && <RecipeList />}
 
-    </View>
+    </ScrollView>
   )
 }
 
@@ -57,5 +59,7 @@ const styles = StyleSheet.create({
   result: {
     flex: 1,
     alignItems: 'center',
+    marginBottom: 32,
+    // backgroundColor: 'green'
   },
 })

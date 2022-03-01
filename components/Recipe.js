@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
-import GoBack from '../components/GoBack'
+import GoBack from './Buttons/GoBack'
 
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { currentRecipeState, recipeListState, resultState } from '../store/atoms/globals'

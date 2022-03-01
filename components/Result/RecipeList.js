@@ -15,34 +15,30 @@ export default function RecipeList() {
   const colorScheme = useRecoilValue(colorSchemeState)
 
   return (
-    <View style={{ width: '100%', padding: 16 }}>
+    <View style={{ flex: 1, width: '100%', padding: 16 }}>
 
       <Text style={[GlobalStyles.bigText]}>Mes recettes trouvées</Text>
 
       <View style={styles.recipeList}>
 
           {recipes.map(recipe => (
-            <View key={recipe.id}
-              style={[styles.recipeItem, GlobalStyles.secondBg,
-                { shadowColor: colorScheme === 'dark' ? 'turquoise' : '#000' }
-              ]}
-            >
+            <View key={recipe.id} style={[styles.recipeItem]}>
               <Image
-                source={{ uri: `http://192.168.1.33:3000/${recipe.image}`, width: '100%', height: 200 }}
-                style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, resizeMode: 'cover' }}
+                source={{ uri: `http://192.168.1.33:3000/${recipe.image}`, width: 80, height: 80 }}
+                style={{ borderRadius: 10, resizeMode: 'cover' }}
               />
 
               <Link to={`/result/${recipe.id}`} onPress={() => setRecipe(recipe)} style={styles.recipeLink}>
                 <View style={styles.linkContent}>
-                  <Text style={[styles.recipeTitle, GlobalStyles.veryBigText, GlobalStyles.textBold, GlobalStyles.whiteText]}>
+                  <Text style={[styles.recipeTitle, GlobalStyles.bigText, GlobalStyles.textBold, { color: 'black' }]}>
                     {recipe.name}
                   </Text>
 
                   <View style={styles.seeRecipe}>
-                    <Text style={[GlobalStyles.mediumText, GlobalStyles.textBold, GlobalStyles.whiteText ]}>
+                    <Text style={[GlobalStyles.mediumText, GlobalStyles.textBold, { color: 'grey' } ]}>
                       Revoir ma recette
                     </Text>
-                    <Image source={RightArrow} style={{ width: 20, height: 20, tintColor: 'white' }} />
+                    <Image source={RightArrow} style={{ width: 20, height: 20, tintColor: 'grey', marginLeft: 16 }} />
                   </View>
                 </View>
               </Link>
@@ -62,23 +58,25 @@ const styles = StyleSheet.create({
     marginVertical: 30
   },
   recipeItem: {
-    width: '90%',
+    width: '100%',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 30,
+    marginBottom: 16,
     borderRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.51,
-    shadowRadius: 10,
-    elevation: 15,
+    // borderWidth: 2,
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 5,
+    // },
+    // shadowOpacity: 0.51,
+    // shadowRadius: 10,
+    // elevation: 15,
   },
   recipeLink: {
     width: '100%',
-    paddingTop: 10,
-    paddingBottom: 20,
+    // paddingTop: 10,
+    // paddingBottom: 20,
     paddingHorizontal: 20,
     alignItems: 'center',
   },
@@ -89,11 +87,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   seeRecipe: {
-    width: '70%',
+    width: '80%',
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-end',
+    // justifyContent: 'space-around',
     alignItems: 'center',
-    alignSelf: 'flex-end',
+    // alignSelf: 'flex-end',
     paddingTop: 20
   }
 })

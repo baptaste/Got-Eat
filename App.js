@@ -8,18 +8,18 @@ import { GlobalStyles } from './styles/GlobalStyles';
 import Consent from './components/Consent'
 import Inventory from './components/Inventory';
 import Ingredients from './components/Ingredients';
-import Submit from './components/Submit';
+import Submit from './components/Buttons/Submit';
 import Result from './components/Result';
 import Nav from './components/Nav';
 import Home from './components/Home';
 import Cart from './components/Cart';
 import Recipe from './components/Recipe';
+import AddMore from './components/Buttons/AddMore';
 
 import { RecoilRoot } from 'recoil'
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
-import { ingredientsState, userIngredientsState, resultState, currentRecipeState, ingredientsPickedState, recipeListState } from './store/atoms/globals'
-import { colorSchemeState, windowHeightState, isLookingForMoreState, isLoadingState } from './store/atoms/settings';
-// import { totalIngredientsPickedState } from './store/selectors/selectors';
+import { ingredientsState, userIngredientsState, resultState, currentRecipeState, ingredientsPickedState } from './store/atoms/globals'
+import { colorSchemeState, windowHeightState, currentLocationState } from './store/atoms/settings';
 
 export default function RecoilApp() {
   return (
@@ -76,10 +76,10 @@ function App() {
 
   const result = useRecoilValue(resultState)
   const recipe = useRecoilValue(currentRecipeState)
-  const isLookingForMore = useRecoilValue(isLookingForMoreState)
-  const recipesList = useRecoilValue(recipeListState)
-  const isLoading = useRecoilValue(isLoadingState)
-  // const totalIngredientsPicked = useRecoilValue(totalIngredientsPickedState)
+  const pathname = useRecoilValue(currentLocationState)
+  // const isLookingForMore = useRecoilValue(isLookingForMoreState)
+  // const recipesList = useRecoilValue(recipeListState)
+  // const isLoading = useRecoilValue(isLoadingState)
 
   // update userIngredients recoil's atom
   const handleIngredientPick = (categoryName, booleanName, ingredient) => {
@@ -136,10 +136,6 @@ function App() {
   // }, [isLookingForMore])
 
   // useEffect(() => {
-  //   if (totalIngredientsPicked !== 0) console.log('totalIngredientsPicked :', totalIngredientsPicked);
-  // }, [totalIngredientsPicked])
-
-  // useEffect(() => {
   //   if (recipesList.length !== 0) console.log('recipesList :', recipesList);
   // }, [recipesList])
 
@@ -183,6 +179,8 @@ function App() {
             <Submit />
           </Suspense>
         }
+
+        {pathname === '/result' && <AddMore />}
 
 
         {/* {isLookingForMore && userIngredients.length > 5 && <Submit />} */}

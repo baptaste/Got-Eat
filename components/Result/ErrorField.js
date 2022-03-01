@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import { Link } from 'react-router-native'
 import { GlobalStyles } from '../../styles/GlobalStyles'
 
@@ -21,20 +21,25 @@ export default function ErrorField() {
     resetUserIngredients()
   }
 
-
   return (
     <View style={{ width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text style={[GlobalStyles.mediumText, GlobalStyles.textBold, { width: '100%', color: 'black' }]}>
           {result.message}
         </Text>
         <Image source={NoFood} style={{ width: 150, height: 150, marginVertical: 32 }} />
-        <Link
-          to='/inventory'
-          onPress={resetStates}
-          style={styles.retryButton}
-        >
-          <Text style={[GlobalStyles.textBold, GlobalStyles.secondColor]}>Je refais mon inventaire</Text>
-        </Link>
+        <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around' }}>
+          <TouchableOpacity onPress={resetStates}
+            style={[styles.retryButton, { borderColor: 'black' }]}>
+            <Text style={[GlobalStyles.textBold, { color: 'black' }]}>Cacher</Text>
+          </TouchableOpacity>
+          <Link
+            to='/inventory'
+            onPress={resetStates}
+            style={styles.retryButton}
+          >
+            <Text style={[GlobalStyles.textBold, GlobalStyles.secondColor]}>Je refais mon inventaire</Text>
+          </Link>
+        </View>
     </View>
   )
 }

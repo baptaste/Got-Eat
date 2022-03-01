@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
-import GoBack from '../components/GoBack'
+import GoBack from './Buttons/GoBack'
 
 export default function PageHead({ title }) {
 

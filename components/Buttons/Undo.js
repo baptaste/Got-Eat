@@ -1,10 +1,10 @@
 import React from 'react'
 import { StyleSheet, Image, TouchableOpacity, Text } from 'react-native'
-import { GlobalStyles } from '../styles/GlobalStyles'
+import { GlobalStyles } from '../../styles/GlobalStyles'
 
 import { useResetRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { ingredientsState, userIngredientsState, resultState } from '../store/atoms/globals'
-import { colorSchemeState, isLookingForMoreState } from '../store/atoms/settings'
+import { ingredientsState, userIngredientsState, resultState } from '../../store/atoms/globals'
+import { colorSchemeState, isLookingForMoreState } from '../../store/atoms/settings'
 
 export default function Undo({ marginTop }) {
 
@@ -34,7 +34,7 @@ export default function Undo({ marginTop }) {
         Vider l'inventaire
       </Text>
       <Image
-        source={require('../assets/icons/undo-arrow.png')}
+        source={require('../../assets/icons/undo-arrow.png')}
         style={{ width: 20, height: 20, tintColor: colorScheme === 'dark' ? GlobalStyles.fourthColor.color : 'grey' }}
       />
     </TouchableOpacity>

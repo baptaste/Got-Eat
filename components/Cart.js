@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image } from 'react-native'
 import { useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import PageHead from '../components/PageHead'
-import Undo from '../components/Undo'
+import Undo from './Buttons/Undo'
 import _ from 'lodash'
 
 import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil'

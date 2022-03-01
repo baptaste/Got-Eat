@@ -11,7 +11,7 @@ export default function GoBack() {
       style={{ width: 50, height: 40,  justifyContent: 'center', marginLeft: 5}}
     >
       <Image
-        source={require('../assets/icons/left-arrow.png')}
+        source={require('../../assets/icons/left-arrow.png')}
         style={{ width: 25, height: 25, tintColor: 'grey' }}
       />
     </TouchableOpacity>

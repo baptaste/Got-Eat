@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 // import axios from 'axios'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useNavigate } from 'react-router-native'
-import { GlobalStyles } from '../styles/GlobalStyles'
+import { GlobalStyles } from '../../styles/GlobalStyles'
 
 import { useSetRecoilState, useRecoilValue, useRecoilState, useResetRecoilState } from 'recoil'
-import { resultState, ingredientsPickedState } from '../store/atoms/globals'
-import { colorSchemeState, isLoadingState, isLookingForMoreState, hasSubmitState } from '../store/atoms/settings'
-import { recipeQueryState } from '../store/selectors/selectors'
+import { resultState, ingredientsPickedState } from '../../store/atoms/globals'
+import { colorSchemeState, isLoadingState, isLookingForMoreState, hasSubmitState } from '../../store/atoms/settings'
+import { recipeQueryState } from '../../store/selectors/selectors'
 
 export default function Submit() {
 

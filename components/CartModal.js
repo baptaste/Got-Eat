@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
-import Undo from '../components/Undo'
+import Undo from './Buttons/Undo'
 import Close from '../assets/icons/cancel.png'
 import { useRecoilValue } from 'recoil'
 import { userIngredientsState } from '../store/atoms/globals'
