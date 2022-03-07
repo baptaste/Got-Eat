@@ -19,7 +19,7 @@ import AddMore from './components/Buttons/AddMore';
 import { RecoilRoot } from 'recoil'
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
 import { ingredientsState, userIngredientsState, resultState, currentRecipeState, ingredientsPickedState } from './store/atoms/globals'
-import { colorSchemeState, windowHeightState, currentLocationState } from './store/atoms/settings';
+import { colorSchemeState, windowHeightState } from './store/atoms/settings';
 
 export default function RecoilApp() {
   return (
@@ -76,9 +76,6 @@ function App() {
 
   const result = useRecoilValue(resultState)
   const recipe = useRecoilValue(currentRecipeState)
-  const pathname = useRecoilValue(currentLocationState)
-  // const isLookingForMore = useRecoilValue(isLookingForMoreState)
-  // const recipesList = useRecoilValue(recipeListState)
   // const isLoading = useRecoilValue(isLoadingState)
 
   // update userIngredients recoil's atom
@@ -130,11 +127,6 @@ function App() {
     }
   }
 
-  /* TODO // remove this useless atom  */
-  // useEffect(() => {
-  //   console.log('isLookingForMore ? ', isLookingForMore);
-  // }, [isLookingForMore])
-
   // useEffect(() => {
   //   if (recipesList.length !== 0) console.log('recipesList :', recipesList);
   // }, [recipesList])
@@ -146,8 +138,12 @@ function App() {
     //   >
 
       <NativeRouter>
-        <ScrollView contentContainerStyle={[styles.container]}>
-          <View style={styles.main}>
+        <ScrollView
+          contentContainerStyle={[
+            styles.container,
+            { backgroundColor: colorScheme === 'dark' ? GlobalStyles.mainBgDark.backgroundColor : GlobalStyles.mainBgLight.backgroundColor }]}
+        >
+          <View style={[styles.main, { minHeight: windowHeight }]}>
 
             <Routes>
               <Route exact path='/'
@@ -180,11 +176,6 @@ function App() {
           </Suspense>
         }
 
-        {pathname === '/result' && <AddMore />}
-
-
-        {/* {isLookingForMore && userIngredients.length > 5 && <Submit />} */}
-
         <View style={styles.footer}>
           <Nav />
         </View>
@@ -197,9 +188,13 @@ function App() {
 
 const styles = StyleSheet.create({
   container: {
+    // flex: 1,
+    // height: '100%',
     paddingHorizontal: 10,
     color: 'black',
-    zIndex: -1
+    zIndex: -1,
+    // backgroundColor: '#fff8ef'
+    // backgroundColor: '#252627'
   },
   // background: {
   //   position: 'absolute',
@@ -210,8 +205,9 @@ const styles = StyleSheet.create({
   //   height: '100vh'
   // },
   main: {
+    flex: 1,
     width: '100%',
-    height: '100%',
+    // backgroundColor: 'green',
     marginTop: 20,
   },
   footer: {

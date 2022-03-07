@@ -15,11 +15,6 @@ export const windowHeightState = atom({
   default: 0
 })
 
-export const isLookingForMoreState = atom({
-  key: 'isLookingForMoreState',
-  default: false
-})
-
 export const isLoadingState = atom({
   key: 'isLoadingState',
   default: false

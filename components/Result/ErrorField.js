@@ -24,7 +24,7 @@ export default function ErrorField() {
   return (
     <View style={{ width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text style={[GlobalStyles.mediumText, GlobalStyles.textBold, { width: '100%', color: 'black' }]}>
-          {result.message}
+          {result?.message}
         </Text>
         <Image source={NoFood} style={{ width: 150, height: 150, marginVertical: 32 }} />
         <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around' }}>

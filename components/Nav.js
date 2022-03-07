@@ -24,8 +24,9 @@ export default function Nav() {
   const colorScheme = useRecoilValue(colorSchemeState)
 
   return (
-    <View style={[styles.nav]}>
-
+    <View style={[styles.nav,
+      { backgroundColor: colorScheme === 'dark' ? GlobalStyles.mainBgDark.backgroundColor : GlobalStyles.mainBgLight.backgroundColor }]}
+    >
       {routes.map(({ path, icon, name }, index) => (
         <Link
           exact to={path}
@@ -35,17 +36,17 @@ export default function Nav() {
           <View style={styles.navLink} >
             <Image
               source={icon}
-              style={{ width: 30, height: 30,
-                tintColor: colorScheme === 'dark' ?
-                  currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
-                  : currentLocation === path ? GlobalStyles.thirdColor.color : 'grey'
+              style={{ width: 30, height: 30, tintColor: currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
+                // tintColor: colorScheme === 'dark' ?
+                //   currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
+                //   : currentLocation === path ? GlobalStyles.thirdColor.color : 'grey'
               }}
             />
-            <Text style={[styles.linkText,
-              { color: colorScheme === 'dark' ?
-                currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
-                : currentLocation === path ? GlobalStyles.thirdColor.color : 'grey'
-              }
+            <Text style={[styles.linkText, { color: currentLocation === path ? GlobalStyles.secondColor.color : 'grey' }
+              // { color: colorScheme === 'dark' ?
+              //   currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
+              //   : currentLocation === path ? GlobalStyles.thirdColor.color : 'grey'
+              // }
             ]}
             >
               {name}

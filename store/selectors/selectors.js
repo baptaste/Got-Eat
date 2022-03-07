@@ -1,7 +1,9 @@
 import axios from 'axios'
 import { selector } from 'recoil'
-import { dataItemsState, userIngredientsState, resultState, ingredientsState, recipeListState } from '../atoms/globals'
+import { dataItemsState, userIngredientsState, resultState, ingredientsState, foundRecipeListState } from '../atoms/globals'
 import { hasSubmitState } from '../atoms/settings'
+
+const baseAPIurl = 'http://192.168.1.33:3000/'
 
 // either Error obj, OR Success arr with recipe(s)
 export const recipeQueryState = selector({
@@ -10,39 +12,53 @@ export const recipeQueryState = selector({
     const hasSubmit = get(hasSubmitState)
     const ingredients = get(ingredientsState)
     const ingredientsToString = get(userIngredientsState).map(item => item.value.toLowerCase())
-    const recipeList = get(recipeListState)
+    const foundRecipeList = get(foundRecipeListState)
 
     const userData = { ...ingredients, ingredientsToString }
+
+    console.log('ingredientsToString :', ingredientsToString);
 
     if (hasSubmit) {
       try {
         console.log('fetching data...');
-        const res = await axios.get('http://192.168.1.33:3000/getRecipes/', { params: userData })
-        // const resultRecipes = [...res.data.recipes]
-        // console.log('SELECTOR resultRecipes :', resultRecipes);
-        // console.log('SELECTOR recipeList :', recipeList);
+        const res = await axios.get(`${baseAPIurl}getRecipes`, { params: userData })
 
-        // const isAlreadyInState = recipeList.filter(stateRecipe => {
-        //   let foundRecipe;
+        if (res.data) {
 
-        //   resultRecipes.forEach(recipe => {
-        //     if (recipe === stateRecipe) {
-        //       console.log('recipe === stateRecipe MATCH ', recipe === stateRecipe);
-        //       foundRecipe = stateRecipe
-        //     }
-        //   })
+          if (res.data.status === 'Success') {
+            console.log('recipe query : if success');
+            const resultRecipes = [...res.data.recipes]
+            let currentFoundRecipe = null
 
-        //   if (resultRecipes.includes(stateRecipe)) {
-        //     console.log('resultRecipes.includes(stateRecipe) MATCH ', resultRecipes.includes(stateRecipe));
-        //     foundRecipe = stateRecipe
-        //   }
+            foundRecipeList.find(recipe => {
+              resultRecipes.map(resItem => {
+                if (resItem.id === recipe.id) {
+                  currentFoundRecipe = recipe
+                  return currentFoundRecipe
+                }
+              })
+              return currentFoundRecipe
+            })
 
-        //   return foundRecipe
-        // })
+            if (currentFoundRecipe !== null) {
+              console.log('recipe query : success status but recipe already present in user recipe list');
+              return {
+                status: 'Success',
+                recipes: [{ ...currentFoundRecipe }],
+                message: 'Tu as déjà trouvé une recette avec ces ingrédients.',
+                isAlreadyInState: true
+              }
+            } else {
+              console.log('recipe query : success status');
+              return res.data
+            }
 
-        // console.log('isAlreadyInState ? ', isAlreadyInState);
+          } else {
+            console.log('recipe query : error status');
+            return res.data
+          }
+        }
 
-        return res.data
       } catch (error) {
         console.log(error)
       }

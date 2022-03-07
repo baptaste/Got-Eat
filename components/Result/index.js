@@ -4,12 +4,12 @@ import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../../styles/GlobalStyles'
 
 import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil'
-import { resultState, recipeListState, ingredientsState, userIngredientsState } from '../../store/atoms/globals'
+import { resultState, foundRecipeListState, ingredientsState, userIngredientsState } from '../../store/atoms/globals'
 import { currentLocationState, colorSchemeState, hasSubmitState } from '../../store/atoms/settings'
 
 import PageHead from '../PageHead'
 import ResultArea from './ResultArea'
-import RecipeList from './RecipeList'
+import FoundRecipeList from './FoundRecipeList'
 // import AddMore from '../Buttons/AddMore'
 
 export default function Result() {
@@ -18,20 +18,23 @@ export default function Result() {
   const result = useRecoilValue(resultState)
   // const colorScheme = useRecoilValue(colorSchemeState)
   const setCurrentLocation = useSetRecoilState(currentLocationState)
-  const recipesList = useRecoilValue(recipeListState)
+  const foundRecipeList = useRecoilValue(foundRecipeListState)
   const resetHasSubmit = useResetRecoilState(hasSubmitState)
 
   useEffect(() => {
     setCurrentLocation(pathname)
     resetHasSubmit()
+    // console.log('result dans Result index :', result);
   }, [])
 
-  return (
-    <ScrollView contentContainerStyle={[styles.result]}>
 
+
+  return (
+    // <ScrollView contentContainerStyle={[styles.result]}>
+    <View style={styles.result}>
       <PageHead title='Recettes' />
 
-      {(result === null && recipesList.length === 0) &&
+      {(result === null && foundRecipeList.length === 0) &&
         <View style={styles.message, { width: '100%', height: 50, position: 'relative' }} >
           <Text style={[GlobalStyles.mediumText, { width: '100%', fontWeight: '300'  }]}>
             Tu n'as pas encore de recettes. Tu peux faire la liste de tes ingrédients dans
@@ -46,18 +49,20 @@ export default function Result() {
         </View>
       }
 
-      {/* <AddMore /> */}
-
       {result !== null && <ResultArea />}
-      {recipesList.length !== 0 && <RecipeList />}
+      {foundRecipeList.length !== 0 && <FoundRecipeList />}
+    </View>
 
-    </ScrollView>
+
+
+    // </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
   result: {
     flex: 1,
+    // height: '100%',
     alignItems: 'center',
     marginBottom: 32,
     // backgroundColor: 'green'

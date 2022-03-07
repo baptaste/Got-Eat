@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from 'react'
-// import axios from 'axios'
+import React, { useEffect } from 'react'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useNavigate } from 'react-router-native'
 import { GlobalStyles } from '../../styles/GlobalStyles'
 
 import { useSetRecoilState, useRecoilValue, useRecoilState, useResetRecoilState } from 'recoil'
 import { resultState, ingredientsPickedState } from '../../store/atoms/globals'
-import { colorSchemeState, isLoadingState, isLookingForMoreState, hasSubmitState } from '../../store/atoms/settings'
+import { colorSchemeState, isLoadingState, hasSubmitState } from '../../store/atoms/settings'
 import { recipeQueryState } from '../../store/selectors/selectors'
 
 export default function Submit() {
 
   const navigate = useNavigate()
-  const [result, setResult] = useRecoilState(resultState)
-  const resetIsLookingForMoreValue = useResetRecoilState(isLookingForMoreState)
+  const setResult = useSetRecoilState(resultState)
   const recipeQuery = useRecoilValue(recipeQueryState)
   // const setIsLoading = useSetRecoilState(isLoadingState)
   const [hasSubmit, setHasSubmit] = useRecoilState(hasSubmitState)
@@ -29,10 +27,8 @@ export default function Submit() {
   const handleResponse = () => {
     console.log('handleResponse');
     // setIsLoading(true)
-    // console.log('recipeQuery ==> result :', recipeQuery);
     setResult(recipeQuery)
     resetTotalIngredientsPicked()
-    resetIsLookingForMoreValue()
     navigate('/result')
   }
 
@@ -47,7 +43,7 @@ export default function Submit() {
     <TouchableOpacity onPress={handleSubmitPress}
       style={[styles.submit, { shadowColor: colorScheme === 'dark' ? '#ddd' : GlobalStyles.secondBg.backgroundColor }]}
     >
-      <Text style={[styles.submitBtn, GlobalStyles.bigText]}>GO</Text>
+      <Text style={[styles.submitBtn, GlobalStyles.bigText]}>J'ai faim</Text>
     </TouchableOpacity>
   )
 }

@@ -11,7 +11,7 @@ import Checked from '../assets/icons/checked.png'
 
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { dataItemsState, categoryState, ingredientsState, userIngredientsState } from '../store/atoms/globals'
-import { currentLocationState, colorSchemeState } from '../store/atoms/settings'
+import { currentLocationState, colorSchemeState, windowHeightState } from '../store/atoms/settings'
 
 export default function Inventory({ clearState }) {
 
@@ -21,6 +21,7 @@ export default function Inventory({ clearState }) {
   const setCurrentLocation = useSetRecoilState(currentLocationState)
 
   const colorScheme = useRecoilValue(colorSchemeState)
+  const windowHeight = useRecoilValue(windowHeightState)
 
   const [isCartActive, setIsCartActive] = useState(false)
   const handleCartButtonPress = () => setIsCartActive(!isCartActive)
@@ -37,20 +38,21 @@ export default function Inventory({ clearState }) {
 
   useEffect(() => {
     setCurrentLocation(pathname)
+    // console.log('window height :', windowHeight);
   }, [])
 
   return (
-    <View style={styles.inventory}>
+    <View style={[styles.inventory, { minHeight: windowHeight }]}>
 
       <PageHead title='Mon inventaire' />
 
       {!isCartActive &&
         <TouchableOpacity
           onPress={handleCartButtonPress}
-          style={[styles.cartButton, GlobalStyles.fourthBg]}
+          style={[styles.cartButton, GlobalStyles.secondBg]}
         >
           <Image source={CartIcon} style={{ width: 25, height: 25, tintColor: colorScheme === 'dark' ? GlobalStyles.fourthColor.color : 'black' }} />
-          <Text style={[GlobalStyles.mediumText, GlobalStyles.textBold, { color: 'black' }]}>
+          <Text style={[GlobalStyles.mediumText, GlobalStyles.textBold, { color: 'black' } ]}>
             {userIngredients.length >= 3 ? (`Ingrédients (${userIngredients.length - 2})`) : ('Ingrédients')}
           </Text>
         </TouchableOpacity>
@@ -74,7 +76,7 @@ export default function Inventory({ clearState }) {
             to='/inventory/ingredients'
             key={item.id}
             style={ingredients[item.boolean.name] ?
-              [styles.inventoryItem, styles.completed] : [GlobalStyles.secondBg, styles.inventoryItem]}
+              [styles.inventoryItem, styles.completed] : [GlobalStyles.fourthBg, styles.inventoryItem]}
           >
             <>
               <Text
@@ -84,7 +86,7 @@ export default function Inventory({ clearState }) {
                   GlobalStyles.textBold,
                   GlobalStyles.textCenter, { backgroundColor: 'transparent' }
                 ] : [
-                  GlobalStyles.whiteText,
+                  GlobalStyles.mainColorDark,
                   GlobalStyles.mediumText,
                   GlobalStyles.textBold,
                   GlobalStyles.textCenter, { backgroundColor: 'transparent' }
@@ -111,7 +113,8 @@ export default function Inventory({ clearState }) {
 const styles = StyleSheet.create({
   inventory: {
     flex: 5,
-    height: '100%',
+    // height: '100%',
+    marginBottom: 50
   },
   inventoryList: {
     width: '100%',
@@ -131,18 +134,20 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     padding: 10,
     borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.51,
-    shadowRadius: 10,
-    elevation: 15,
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 5,
+    // },
+    // shadowOpacity: 0.51,
+    // shadowRadius: 10,
+    // elevation: 15,
   },
   completed: {
-    backgroundColor: GlobalStyles.thirdBg.backgroundColor,
+    // backgroundColor: GlobalStyles.thirdBg.backgroundColor,
+    backgroundColor: GlobalStyles.mainBgDark.backgroundColor,
     color: '#525252'
+    // color: '#70877F'
   },
   checked: {
     width: 20,

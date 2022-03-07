@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import GoBack from './Buttons/GoBack'
 
-import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { currentRecipeState, recipeListState, resultState } from '../store/atoms/globals'
+import { useRecoilValue, useSetRecoilState, useResetRecoilState, useRecoilState } from 'recoil'
+import { currentRecipeState, foundRecipeListState, resultState } from '../store/atoms/globals'
 import { currentLocationState } from '../store/atoms/settings'
 
 export default function Recipe() {
@@ -13,13 +13,50 @@ export default function Recipe() {
   const { pathname } = useLocation()
   const setCurrentLocation = useSetRecoilState(currentLocationState)
   const recipe = useRecoilValue(currentRecipeState)
-  // console.log('currentRecipeState :', recipe);
-  // const recipeList = useRecoilValue(recipeListState)
-  // const result = useRecoilValue(resultState)
+  const [result, setResult] = useRecoilState(resultState)
+  const resetResult = useResetRecoilState(resultState)
+  const [foundRecipeList, setFoundRecipeList] = useRecoilState(foundRecipeListState)
+
+  const updateFoundRecipeList = () => {
+    const filteredResultRecipes = result.recipes.filter(resultRecipe => resultRecipe !== recipe)
+    console.log('filteredResultRecipes :', filteredResultRecipes);
+
+    if (filteredResultRecipes.length === 0) {
+      // pressed recipe is the only one recipe in result state
+      console.log(filteredResultRecipes.length, 'recipes remaining in resultState')
+      resetResult()
+      console.log('resultState reset !!', result)
+      setFoundRecipeList([...foundRecipeList, recipe].reverse())
+    }
+
+    if (filteredResultRecipes.length > 1) {
+      /* result.recipes array contains more thant 1 recipe,
+         lets update result by removing the recipe user just pressed
+      */
+      console.log(filteredResultRecipes.length, 'not consulted recipes remaining in resultState')
+      const newResult = {
+        ...result,
+        recipes: [...filteredResultRecipes]
+      }
+      setResult(newResult)
+      console.log('resultState updated ', newResult)
+    }
+  }
 
   useEffect(() => {
     setCurrentLocation(pathname)
+    console.log('result dans Recipe :', result);
   }, [])
+
+  useEffect(() => {
+    if (result !== null) {
+      if (result.isAlreadyInState) {
+        resetResult()
+      } else {
+        updateFoundRecipeList()
+      }
+    }
+  }, [result])
 
   return (
     <>
@@ -30,6 +67,12 @@ export default function Recipe() {
           {recipe.name}
         </Text>
       </View>
+
+      {/* <TouchableOpacity style={{ backgroundColor: 'green' }}
+        onPress={bookmarkRecipe}
+      >
+        <Text>Ajouter à mes favoris</Text>
+      </TouchableOpacity> */}
 
       <Text style={[GlobalStyles.veryBigText, { marginVertical: 20, color: GlobalStyles.secondColor.color }]}>
         Tes ingredients pour cette recette
@@ -47,6 +90,19 @@ export default function Recipe() {
 
       <Text style={[GlobalStyles.veryBigText, { marginVertical: 20, color: GlobalStyles.secondColor.color }]}>
         Préparation
+      </Text>
+
+      <Text style={[GlobalStyles.mediumText, { marginBottom: 16 }]}>
+      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+      </Text>
+      <Text style={[GlobalStyles.mediumText, { marginBottom: 16 }]}>
+      Exercitationem soluta, quam magnam quod impedit aliquam.
+      </Text>
+      <Text style={[GlobalStyles.mediumText, { marginBottom: 16 }]}>
+      Quibusdam esse, minus libero, dignissimos itaque cumque nam voluptatum animi modi quisquam qui.
+      </Text>
+      <Text style={[GlobalStyles.mediumText, { marginBottom: 16 }]}>
+      Facere, quae!
       </Text>
     </>
   )

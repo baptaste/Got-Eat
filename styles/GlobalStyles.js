@@ -38,36 +38,42 @@ export const GlobalStyles = StyleSheet.create({
     fontWeight: 'bold'
   },
   /* COLORS */
-  // dark blue
-  mainBg: {
-    // backgroundColor: '#0C0A3E'
-    // backgroundColor: 'hsl(158, 100%, 13%)'
+  mainBgLight: {
+    backgroundColor: 'white'
+  },
+  mainBgDark: {
+    backgroundColor: '#252627'
+  },
+  mainColorDark: {
+    color: '#252627'
+  },
 
-  },
-  mainColor: {
-   color: '#0C0A3E',
-  },
-  // light blue
   secondBg: {
-    // backgroundColor: 'hsl(242, 72%, 44%)'
+      // backgroundColor: '#168d3a' // green spotify bis
     // backgroundColor: '#00a86b' // jade
-    backgroundColor: '#F9564F' // very nice red orange
+    // backgroundColor: '#F9564F' // very nice red orange CURRENT
+    // backgroundColor: '#F55943' // orange from Jow
+    // backgroundColor: '#ffc30b'
+    backgroundColor: '#e6ac00'
   },
   secondColor: {
-  //  color: 'hsl(242, 72%, 44%)',
+    color: '#ffc30b'
+    // color: '#168d3a'
     // color: '#00a86b' // jade
-    color: '#F9564F' // very nice red orange
+    // color: '#F9564F' // very nice red orange CURRENT
   },
   // very dark blue (almost black)
   thirdBg: {
     // backgroundColor: 'hsl(242, 72%, 6%)',
     // backgroundColor: 'hsl(158, 100%, 9%)'  // dark jade
-    backgroundColor: 'hsl(2, 93%, 30%)'
+    // backgroundColor: 'hsl(2, 93%, 30%)'
+    backgroundColor: '#70877F'
   },
   thirdColor: {
     // color: 'hsl(242, 72%, 6%)',
     // color: 'hsl(158, 100%, 13%)' // dark jade
-    color: '#F9564F' // very nice red orange
+    // color: '#F9564F' // very nice red orange
+    color: '#70877F'
   },
   // light grey
   fourthBg: {

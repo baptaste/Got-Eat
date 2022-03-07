@@ -3,8 +3,8 @@ import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import { Link } from 'react-router-native'
 import { GlobalStyles } from '../../styles/GlobalStyles'
 
-import { useSetRecoilState, useRecoilValue, useRecoilState, useResetRecoilState } from 'recoil'
-import { resultState, currentRecipeState, recipeListState } from '../../store/atoms/globals'
+import { useSetRecoilState, useRecoilValue } from 'recoil'
+import { resultState, currentRecipeState } from '../../store/atoms/globals'
 import { colorSchemeState } from '../../store/atoms/settings'
 
 import RightArrow from '../../assets/icons/right-arrow.png'
@@ -12,61 +12,39 @@ import SuccessFood from '../../assets/images/food-delivery-light.png'
 
 export default function SuccessField() {
 
+  const baseAPIurl = 'http://192.168.1.33:3000/'
   const colorScheme = useRecoilValue(colorSchemeState)
-  const [result, setResult] = useRecoilState(resultState)
+  const result = useRecoilValue(resultState)
   const setRecipe = useSetRecoilState(currentRecipeState)
-  const resetResult = useResetRecoilState(resultState)
-  const [recipeList, setRecipeList] = useRecoilState(recipeListState)
-
-  const handleRecipePress = (pressedRecipe) => {
-    const filteredResultRecipes = result.recipes.filter(recipe => recipe !== pressedRecipe)
-    console.log('filteredResultRecipes :', filteredResultRecipes);
-
-    if (filteredResultRecipes.length === 0) {
-      // pressed recipe is the only one recipe in result state
-      console.log(filteredResultRecipes.length, 'recipes remaining in resultState')
-      resetResult()
-      console.log('resultState reset !!', result)
-      setRecipeList([...recipeList, pressedRecipe].reverse())
-    }
-
-    if (filteredResultRecipes.length > 1) {
-      /* result.recipes array contains more thant 1 recipe,
-         lets update result by removing the recipe user just pressed
-      */
-      console.log(filteredResultRecipes.length, 'not consulted recipes remaining in resultState')
-      const newResult = {
-        ...result,
-        recipes: [...filteredResultRecipes]
-      }
-      setResult(newResult)
-      console.log('resultState updated ', newResult)
-    }
-
-    setRecipe(pressedRecipe) // set recipe in recipeState then navigate to /result/recipeId
-  }
 
   return (
     <View style={{ width: '100%', alignItems: 'center' }}>
 
       <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Image source={SuccessFood} style={{ width: 100, height: 100 }} />
-        <Text style={[GlobalStyles.bigText, GlobalStyles.textBold, { width: '60%' }]}>{result.message}</Text>
+        {/* {result !== null && !result.isAlreadyInState &&
+          <Image source={SuccessFood} style={{ width: 70, height: 70 }} />
+        } */}
+        <Image source={SuccessFood} style={{ width: 70, height: 70 }} />
+        <Text style={[GlobalStyles.bigText, GlobalStyles.textBold, { width: '70%' }]}>{result?.message}</Text>
       </View>
 
       <View style={styles.recipeList}>
-        {result.recipes.map(recipe => (
+        {result?.recipes.map(recipe => (
           <View key={recipe.id}
             style={[styles.recipeItem, GlobalStyles.secondBg,
             { shadowColor: colorScheme === 'dark' ? 'turquoise' : '#000' }
             ]}>
 
             <Image
-              source={{ uri: `http://192.168.1.33:3000/${recipe.image}`, width: '100%', height: 200 }}
+              source={{ uri: `${baseAPIurl}${recipe.image}`, width: '100%', height: 200 }}
               style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, resizeMode: 'cover' }}
             />
 
-            <Link to={`/result/${recipe.id}`} onPress={() => handleRecipePress(recipe)} style={styles.recipeLink}>
+            <Link
+              to={`/result/${recipe.id}`}
+              onPress={() => setRecipe(recipe)}
+              style={styles.recipeLink}
+            >
               <View style={styles.linkContent}>
                 <Text style={[styles.recipeTitle, GlobalStyles.veryBigText, GlobalStyles.textBold, GlobalStyles.whiteText]}>
                   {recipe.name}

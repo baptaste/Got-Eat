@@ -13,7 +13,7 @@ export default function CartModal({ clearState, handleCartButtonPress, colorSche
   return (
        <View style={[styles.cartBlock, GlobalStyles.fourthBg]}>
 
-       <Text style={[ GlobalStyles.bigText, GlobalStyles.textBold ]}>
+       <Text style={[ GlobalStyles.bigText, GlobalStyles.textBold, { color: 'black' }]}>
          {userIngredients.length >= 3 ?
            `${userIngredients.length - 2} ${(userIngredients.length - 2) > 1 ? 'sélectionnés' : 'sélectionné'}`
            : 'Ingrédients de base'

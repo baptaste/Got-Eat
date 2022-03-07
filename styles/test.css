@@ -21,4 +21,28 @@ body {
   color: #252627 /* eerie black */;
   color: #3D3A4B /* dark liver */;
   color: #212227 /* raisin black */;
+
+
+
+/* App global main background */
+  color: #fff8ef;
+  color: whitesmoke;
+
+/* main color */
+  color: #1DB954; /* green spotify */
+  color: #168d40;
+  color: #168d3a;
+  color: #F9564F; /* very nice red orange CURRENT */
+  color: #F55943; /* orange jow */
+  color: #f44e25;
+  color: #ffc30b; /* current yellow mustard */
+  color: #e6ac00;
+
+/* second color */
+  color: #116e32;
+  color: #940a05;
+  color: #70877F; /* light grey */
+
+/* third color */
+  color: #212227; /* raisin black */;
 }

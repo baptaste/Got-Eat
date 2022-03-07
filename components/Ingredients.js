@@ -24,7 +24,8 @@ export default function Ingredients({ handleIngredientPick }) {
   }, [])
 
   return (
-    <View style={{ height: windowHeight - 100 }}>
+    // <View style={{ height: windowHeight - 100 }}>
+    <View style={{ flex: 1 }}>
 
       <PageHead title={category.question !== null && category.question} />
 
@@ -108,6 +109,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 20,
     borderRadius: 7,
-    color: 'white'
+    color: GlobalStyles.mainColorDark.color
   },
 })

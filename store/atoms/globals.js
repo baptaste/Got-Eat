@@ -57,8 +57,8 @@ export const resultState = atom({
 })
 
 // set result recipe in List if user consulted it (!isNew)
-export const recipeListState = atom({
-  key: 'recipeListState',
+export const foundRecipeListState = atom({
+  key: 'foundRecipeListState',
   default: []
 })
 
