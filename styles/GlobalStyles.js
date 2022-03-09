@@ -84,12 +84,12 @@ export const GlobalStyles = StyleSheet.create({
   },
   // deep emerald
   fifthBg: {
-    backgroundColor: 'hsl(134, 64%, 29%)',
+    backgroundColor: 'hsl(45, 100%, 92%)',
   },
   fifthColor: {
-    color: 'hsl(134, 64%, 29%)',
+    color: 'hsl(45, 100%, 92%)',
   },
-  fithTintColor: {
+  sixthTintColor: {
     tintColor: 'hsl(134, 64%, 35%)',
   }
 })

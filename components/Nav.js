@@ -7,6 +7,7 @@ import Home from '../assets/icons/home-light.png'
 import Recipes from '../assets/icons/recipe-chef.png'
 import Inventory from '../assets/icons/shopping-list.png'
 import Cart from '../assets/icons/shopping-basket.png'
+// import Blocks from '../assets/icons/squares-2.png'
 
 import { useRecoilValue } from 'recoil'
 import { currentLocationState, colorSchemeState } from '../store/atoms/settings'
@@ -31,23 +32,26 @@ export default function Nav() {
         <Link
           exact to={path}
           key={name + index}
-          style={{ height: styles.nav.height, paddingTop: 10 }}
+          style={{ height: styles.nav.height, width: '20%', paddingTop: 10 }}
         >
           <View style={styles.navLink} >
             <Image
               source={icon}
-              style={{ width: 30, height: 30, tintColor: currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
+              style={{ width: 25, height: 25, tintColor: currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
                 // tintColor: colorScheme === 'dark' ?
                 //   currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
                 //   : currentLocation === path ? GlobalStyles.thirdColor.color : 'grey'
               }}
             />
-            <Text style={[styles.linkText, { color: currentLocation === path ? GlobalStyles.secondColor.color : 'grey' }
+            <Text style={[styles.linkText,
+              { fontWeight: currentLocation === path ? 'bold' : 'normal' },
+              { color: currentLocation === path ?
+                colorScheme === 'dark' ? 'white' : GlobalStyles.mainColorDark.color
+                : 'grey' }, ]}
               // { color: colorScheme === 'dark' ?
               //   currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
               //   : currentLocation === path ? GlobalStyles.thirdColor.color : 'grey'
               // }
-            ]}
             >
               {name}
             </Text>
@@ -66,13 +70,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     height: 60,
-    padding: 20,
-    borderTopWidth: 1,
+    // paddingHorizontal: 20,
+    borderTopWidth: 0.5,
     borderTopColor: GlobalStyles.fourthBg.backgroundColor
   },
   navLink: {
+    height: '90%',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'space-between'
   },
   linkText: {
     fontSize: 11,

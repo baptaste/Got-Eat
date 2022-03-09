@@ -49,10 +49,12 @@ export default function Inventory({ clearState }) {
       {!isCartActive &&
         <TouchableOpacity
           onPress={handleCartButtonPress}
-          style={[styles.cartButton, GlobalStyles.secondBg]}
+          style={[styles.cartButton]}
         >
-          <Image source={CartIcon} style={{ width: 25, height: 25, tintColor: colorScheme === 'dark' ? GlobalStyles.fourthColor.color : 'black' }} />
-          <Text style={[GlobalStyles.mediumText, GlobalStyles.textBold, { color: 'black' } ]}>
+          <Image source={CartIcon}
+            style={{ width: 25, height: 25, tintColor: colorScheme === 'dark' ? GlobalStyles.fourthColor.color : GlobalStyles.secondColor.color }}
+          />
+          <Text style={[GlobalStyles.mediumText, GlobalStyles.textBold, { color: GlobalStyles.secondColor.color } ]}>
             {userIngredients.length >= 3 ? (`Ingrédients (${userIngredients.length - 2})`) : ('Ingrédients')}
           </Text>
         </TouchableOpacity>
@@ -97,7 +99,7 @@ export default function Inventory({ clearState }) {
               {ingredients[item.boolean.name] &&
                 <Image
                   source={Checked}
-                  style={[styles.checked, GlobalStyles.fithTintColor]}
+                  style={[styles.checked, GlobalStyles.sixthTintColor]}
                 />
               }
             </>
@@ -164,6 +166,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingHorizontal: 10,
-    borderRadius: 7,
+    borderRadius: 90,
+    backgroundColor: GlobalStyles.fifthBg.backgroundColor
   }
 })

@@ -36,7 +36,5 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     borderRadius: 40 / 2,
     backgroundColor: '#212227',
-    // borderWidth: 1.5,
-    // borderColor: GlobalStyles.secondBg.backgroundColor
   }
 })

@@ -41,7 +41,7 @@ export default function Submit() {
 
   return (
     <TouchableOpacity onPress={handleSubmitPress}
-      style={[styles.submit, { shadowColor: colorScheme === 'dark' ? '#ddd' : GlobalStyles.secondBg.backgroundColor }]}
+      style={[styles.submit, { backgroundColor: colorScheme === 'dark' ? GlobalStyles.mainBgLight.backgroundColor : GlobalStyles.mainBgDark.backgroundColor }]}
     >
       <Text style={[styles.submitBtn, GlobalStyles.bigText]}>J'ai faim</Text>
     </TouchableOpacity>
@@ -52,27 +52,25 @@ const styles = StyleSheet.create({
   submit: {
     position: 'absolute',
     bottom: 100,
-    left: '30%',
-    width: '40%',
+    left: '25%',
+    // transform: [{ translateX: -50 }, { translateY: 50 }],
+    width: '50%',
     height: 50,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 24,
     borderWidth: 2,
-    borderColor: 'hsl(158, 100%, 13%)',
-    // backgroundColor: GlobalStyles.secondBg.backgroundColor,
-    backgroundColor: 'white',
+    shadowColor: GlobalStyles.secondColor.color,
     shadowOffset: {
       width: 0,
       height: 5,
     },
     shadowOpacity: 0.91,
     shadowRadius: 10,
-    elevation: 10,
+    elevation: 15,
     zIndex: 1000,
   },
   submitBtn: {
-    color: 'black',
-    // backgroundColor: 'salmon'
+    color: GlobalStyles.secondColor.color
   }
 })

@@ -38,6 +38,8 @@ body {
   color: #ffc30b; /* current yellow mustard */
   color: #e6ac00;
 
+  color: hsl(45, 100%, 92%); /* very low opacity current yellow */
+
 /* second color */
   color: #116e32;
   color: #940a05;

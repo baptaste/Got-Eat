@@ -3,7 +3,7 @@ import { selector } from 'recoil'
 import { dataItemsState, userIngredientsState, resultState, ingredientsState, foundRecipeListState } from '../atoms/globals'
 import { hasSubmitState } from '../atoms/settings'
 
-const baseAPIurl = 'http://192.168.1.33:3000/'
+const baseAPIurl = 'http://192.168.1.33:3500'
 
 // either Error obj, OR Success arr with recipe(s)
 export const recipeQueryState = selector({
@@ -21,7 +21,7 @@ export const recipeQueryState = selector({
     if (hasSubmit) {
       try {
         console.log('fetching data...');
-        const res = await axios.get(`${baseAPIurl}getRecipes`, { params: userData })
+        const res = await axios.get(`${baseAPIurl}/api/result`, { params: userData })
 
         if (res.data) {
 

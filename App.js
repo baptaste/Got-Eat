@@ -18,7 +18,7 @@ import AddMore from './components/Buttons/AddMore';
 
 import { RecoilRoot } from 'recoil'
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
-import { ingredientsState, userIngredientsState, resultState, currentRecipeState, ingredientsPickedState } from './store/atoms/globals'
+import { ingredientsState, userIngredientsState, resultState, currentRecipeState, ingredientsPickedState, categoryState } from './store/atoms/globals'
 import { colorSchemeState, windowHeightState } from './store/atoms/settings';
 
 export default function RecoilApp() {
@@ -76,6 +76,7 @@ function App() {
 
   const result = useRecoilValue(resultState)
   const recipe = useRecoilValue(currentRecipeState)
+  const category = useRecoilValue(categoryState)
   // const isLoading = useRecoilValue(isLoadingState)
 
   // update userIngredients recoil's atom
@@ -85,51 +86,57 @@ function App() {
       const updatedUserIngredients = userIngredients.filter(ing => ing !== ingredient)
       setUserIngredients([...updatedUserIngredients])
       setTotalIngredientsPicked((n) => n - 1)
-      console.log('ingredient', ingredient, 'has been removed from users ingredients.', updatedUserIngredients);
+      console.log('ingredient', ingredient.value, 'has been removed from users ingredients.', updatedUserIngredients);
     } else {
       // add ingredient
       setUserIngredients([...userIngredients, ingredient])
       setTotalIngredientsPicked((n) => n + 1)
+      console.log(`ingredient ${ingredient.value} added to userIngredients`);
     }
 
     dispatchToState(categoryName, booleanName, ingredient)
   }
   // update ingredients recoil's atom
-  const dispatchToState = (categoryName, booleanName, value) => {
+  const dispatchToState = (categoryName, booleanName, ingredient) => {
+    console.log('App // booleanName :', booleanName);
+
     const key = categoryName,
           booleanKey = booleanName;
 
-    const isAlreadyInState = ingredients[key].includes(value)
+    const isAlreadyInState = ingredients[key].includes(ingredient)
 
     if (isAlreadyInState) {
-      // console.log('MODIFYING // ingredient', value, 'already present in', key);
-      const updatedStateKey = ingredients[key].filter(el => el !== value)
+      // console.log('MODIFYING // ingredient', ingredient, 'already present in', key);
+      const updatedStateKey = ingredients[key].filter(el => el !== ingredient)
+      console.log('App // updatedStateKey :', updatedStateKey);
       setIngredients({
         ...ingredients,
         [key]: [...updatedStateKey],
         [booleanKey]: updatedStateKey.length >= 1 ? true : !ingredients[booleanKey]
       })
-      console.log('***STATE UPDATE*** , ingredient', value, 'removed in', key, updatedStateKey);
+      console.log('***STATE UPDATE***',
+        'ingredient', ingredient.value, 'removed in', key,
+        booleanKey, 'set to:', updatedStateKey.length >= 1 ? true : !ingredients[booleanKey]
+      );
     }
 
     if (!isAlreadyInState) {
       setIngredients({
         ...ingredients,
-        [key]: [ ...ingredients[key], value ],
+        [key]: [ ...ingredients[key], ingredient ],
         [booleanKey]: ingredients[key].length >= 1 ? true : !ingredients[booleanKey]
       })
 
-      console.log(
-        '***STATE UPDATE***',
-        value.value, 'added to:', key, [ ...ingredients[key], value ],
+      console.log('***STATE UPDATE***',
+        ingredient.value, 'added to:', key, [ ...ingredients[key], ingredient ],
         booleanKey, 'set to:', ingredients[key].length >= 1 ? true : !ingredients[booleanKey]
       );
     }
   }
 
-  // useEffect(() => {
-  //   if (recipesList.length !== 0) console.log('recipesList :', recipesList);
-  // }, [recipesList])
+  useEffect(() => {
+    console.log('ingredientsState :', ingredients);
+  }, [ingredients])
 
   return (
     // <LinearGradient
@@ -149,19 +156,19 @@ function App() {
               <Route exact path='/'
                 element={
                   <>
-                    {!hasConsent &&
+                    {/* {!hasConsent &&
                       <Consent
                         isMoreInfoHidden={isMoreInfoHidden}
                         setIsMoreInfoHidden={setIsMoreInfoHidden}
                       />
-                    }
+                    } */}
                     <Home />
                   </>
                 }
               />
               <Route exact path='/inventory' element={ <Inventory /> }/>
               <Route exact path='/inventory/ingredients' element={ <Ingredients handleIngredientPick={handleIngredientPick} /> } />
-              <Route exact path='/cart' element={ <Cart /> } />
+              <Route exact path='/cart' element={ <Cart handleIngredientPick={handleIngredientPick} /> } />
               <Route exact path='/result' element={ <Result /> } />
               <Route exact path='/result/:id' element={ recipe && <Recipe /> } />
             </Routes>

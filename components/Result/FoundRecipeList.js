@@ -13,7 +13,7 @@ import AddMore from '../Buttons/AddMore'
 
 export default function FoundRecipeList() {
 
-  const baseAPIurl = 'http://192.168.1.33:3000/'
+  const baseAPIurl = 'http://192.168.1.33:3500'
   const recipes = useRecoilValue(foundRecipeListState)
   const setRecipe = useSetRecoilState(currentRecipeState)
   // const colorScheme = useRecoilValue(colorSchemeState)
@@ -35,7 +35,7 @@ export default function FoundRecipeList() {
             <Link key={recipe.id} to={`/result/${recipe.id}`} onPress={() => setRecipe(recipe)} style={{ marginBottom: 24 }}>
               <View style={styles.recipeLink}>
                 <Image
-                  source={{ uri: `${baseAPIurl}${recipe.image}`, width: 80, height: 80 }}
+                  source={{ uri: `${baseAPIurl}/${recipe.image}`, width: 80, height: 80 }}
                   style={{ borderRadius: 10, resizeMode: 'cover' }}
                 />
                 <View style={styles.linkContent}>

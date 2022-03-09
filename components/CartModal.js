@@ -11,12 +11,12 @@ export default function CartModal({ clearState, handleCartButtonPress, colorSche
   const userIngredients = useRecoilValue(userIngredientsState)
 
   return (
-       <View style={[styles.cartBlock, GlobalStyles.fourthBg]}>
+       <View style={[styles.cartBlock, GlobalStyles.fifthBg]}>
 
-       <Text style={[ GlobalStyles.bigText, GlobalStyles.textBold, { color: 'black' }]}>
+       <Text style={[ GlobalStyles.bigText, GlobalStyles.textBold, { color: GlobalStyles.secondColor.color }]}>
          {userIngredients.length >= 3 ?
            `${userIngredients.length - 2} ${(userIngredients.length - 2) > 1 ? 'sélectionnés' : 'sélectionné'}`
-           : 'Ingrédients de base'
+           : 'Les essentiels'
          }
        </Text>
 
@@ -40,7 +40,7 @@ export default function CartModal({ clearState, handleCartButtonPress, colorSche
          style={styles.close}
        >
          <Image source={Close}
-           style={{  width: 20, height: 20, tintColor: colorScheme === 'dark' ? GlobalStyles.fourthColor.color : '#2e2e2e' }}
+           style={{  width: 20, height: 20, tintColor: colorScheme === 'dark' ? GlobalStyles.fourthColor.color : GlobalStyles.secondColor.color }}
          />
        </TouchableOpacity>
 

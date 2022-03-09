@@ -12,7 +12,7 @@ import SuccessFood from '../../assets/images/food-delivery-light.png'
 
 export default function SuccessField() {
 
-  const baseAPIurl = 'http://192.168.1.33:3000/'
+  const baseAPIurl = 'http://192.168.1.33:3500'
   const colorScheme = useRecoilValue(colorSchemeState)
   const result = useRecoilValue(resultState)
   const setRecipe = useSetRecoilState(currentRecipeState)
@@ -36,7 +36,7 @@ export default function SuccessField() {
             ]}>
 
             <Image
-              source={{ uri: `${baseAPIurl}${recipe.image}`, width: '100%', height: 200 }}
+              source={{ uri: `${baseAPIurl}/${recipe.image}`, width: '100%', height: 200 }}
               style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, resizeMode: 'cover' }}
             />
 
