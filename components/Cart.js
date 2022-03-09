@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native'
-import { Link, useLocation } from 'react-router-native'
+import { useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import PageHead from '../components/PageHead'
 import Undo from './Buttons/Undo'
-import _ from 'lodash'
 
-import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil'
-import { dataItemsState, userIngredientsState, categoryState, ingredientsState } from '../store/atoms/globals'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { dataItemsState, userIngredientsState, categoryState } from '../store/atoms/globals'
 import { currentLocationState, colorSchemeState } from '../store/atoms/settings'
-import { totalIngredientsListState } from '../store/selectors/selectors'
 
 import AddMore from './Buttons/AddMore'
 
-import AddMoreIcon from '../assets/icons/addmore.png'
 import RemoveIcon from '../assets/icons/minus.png'
 
 export default function Cart({ handleIngredientPick }) {
@@ -30,7 +27,8 @@ export default function Cart({ handleIngredientPick }) {
   const setCategory = useSetRecoilState(categoryState)
 
   const getFilteredIngredients = () => {
-    let deepDataItemsCopy = _.cloneDeep(storeDataItems)
+    // let deepDataItemsCopy = _.cloneDeep(storeDataItems)
+    let deepDataItemsCopy = JSON.parse(JSON.stringify(storeDataItems))
 
     deepDataItemsCopy = deepDataItemsCopy.filter(category => {
       const matchingCategories = []
@@ -66,7 +64,7 @@ export default function Cart({ handleIngredientPick }) {
   const [ingredientPressed, setIngredientPressed] = useState(null)
 
   const handleRemoveIngredient = () => {
-    let newFilteredIngredients = _.cloneDeep(filteredIngredients)
+    let newFilteredIngredients = JSON.parse(JSON.stringify(filteredIngredients))
 
     newFilteredIngredients = newFilteredIngredients.filter(category => {
       category.options = category.options.map(ingredient => {
@@ -141,9 +139,6 @@ export default function Cart({ handleIngredientPick }) {
             <Text style={[GlobalStyles.whiteText, GlobalStyles.hugeText, styles.category]}>
               {item.label}
             </Text>
-            {/* <Link to='/inventory/ingredients' onPress={() => handleAddMoreIngredients(item)} style={[styles.retryButton]}>
-              <Image source={AddMoreIcon} style={{ width: 20, height: 20, tintColor: 'white' }} />
-            </Link> */}
             <AddMore propsFunction={() => handleAddMoreIngredients(item)} path='/inventory/ingredients' />
           </View>
 
@@ -206,7 +201,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   category: {
-    color: GlobalStyles.secondColor.color
+    color: GlobalStyles.secondColor.color,
+    marginRight: 16
   },
   retryButton: {
     width: 40,
