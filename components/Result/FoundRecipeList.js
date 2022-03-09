@@ -3,20 +3,30 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import { Link } from 'react-router-native'
 import { GlobalStyles } from '../../styles/GlobalStyles'
 
-import { useSetRecoilState, useRecoilValue } from 'recoil'
-import { foundRecipeListState, currentRecipeState } from '../../store/atoms/globals'
-import { colorSchemeState } from '../../store/atoms/settings'
+import { useSetRecoilState, useRecoilValue, useResetRecoilState } from 'recoil'
+import {
+  foundRecipeListState,
+  currentRecipeState,
+  ingredientsState,
+  userIngredientsState,
+} from '../../store/atoms/globals'
+// import { colorSchemeState } from '../../store/atoms/settings'
 
 import AddMore from '../Buttons/AddMore'
-
-// import RightArrow from '../../assets/icons/right-arrow.png'
 
 export default function FoundRecipeList() {
 
   const baseAPIurl = 'http://192.168.1.33:3500'
   const recipes = useRecoilValue(foundRecipeListState)
   const setRecipe = useSetRecoilState(currentRecipeState)
+  const resetIngredients = useResetRecoilState(ingredientsState)
+  const resetUserIngredients = useResetRecoilState(userIngredientsState)
   // const colorScheme = useRecoilValue(colorSchemeState)
+
+  const handleAddMoreRecipe = () => {
+    resetIngredients()
+    resetUserIngredients()
+  }
 
   return (
     <View style={{ width: '100%', padding: 16 }}>
@@ -25,7 +35,10 @@ export default function FoundRecipeList() {
         style={{ width: '100%', flexDirection: 'row', alignItems: 'center',
         justifyContent: 'space-between' }}>
         <Text style={[GlobalStyles.bigText]}>Mes recettes trouvées</Text>
-        <AddMore />
+
+        {recipes.length !== 0 &&
+          <AddMore propsFunction={handleAddMoreRecipe} path='/inventory' />
+        }
       </View>
 
 

@@ -14,7 +14,6 @@ import Nav from './components/Nav';
 import Home from './components/Home';
 import Cart from './components/Cart';
 import Recipe from './components/Recipe';
-import AddMore from './components/Buttons/AddMore';
 
 import { RecoilRoot } from 'recoil'
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'

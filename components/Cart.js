@@ -11,6 +11,8 @@ import { dataItemsState, userIngredientsState, categoryState, ingredientsState }
 import { currentLocationState, colorSchemeState } from '../store/atoms/settings'
 import { totalIngredientsListState } from '../store/selectors/selectors'
 
+import AddMore from './Buttons/AddMore'
+
 import AddMoreIcon from '../assets/icons/addmore.png'
 import RemoveIcon from '../assets/icons/minus.png'
 
@@ -18,7 +20,7 @@ export default function Cart({ handleIngredientPick }) {
 
   const storeDataItems = useRecoilValue(dataItemsState)
   const userIngredients = useRecoilValue(userIngredientsState)
-  const storeIngredients = useRecoilValue(ingredientsState)
+  // const storeIngredients = useRecoilValue(ingredientsState)
   const colorScheme = useRecoilValue(colorSchemeState)
 
   const { pathname } = useLocation()
@@ -139,9 +141,10 @@ export default function Cart({ handleIngredientPick }) {
             <Text style={[GlobalStyles.whiteText, GlobalStyles.hugeText, styles.category]}>
               {item.label}
             </Text>
-            <Link to='/inventory/ingredients' onPress={() => handleAddMoreIngredients(item)} style={[styles.retryButton]}>
+            {/* <Link to='/inventory/ingredients' onPress={() => handleAddMoreIngredients(item)} style={[styles.retryButton]}>
               <Image source={AddMoreIcon} style={{ width: 20, height: 20, tintColor: 'white' }} />
-            </Link>
+            </Link> */}
+            <AddMore propsFunction={() => handleAddMoreIngredients(item)} path='/inventory/ingredients' />
           </View>
 
 

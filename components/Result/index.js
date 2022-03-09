@@ -10,7 +10,6 @@ import { currentLocationState, colorSchemeState, hasSubmitState } from '../../st
 import PageHead from '../PageHead'
 import ResultArea from './ResultArea'
 import FoundRecipeList from './FoundRecipeList'
-// import AddMore from '../Buttons/AddMore'
 
 export default function Result() {
 
@@ -35,7 +34,7 @@ export default function Result() {
       <PageHead title='Recettes' />
 
       {(result === null && foundRecipeList.length === 0) &&
-        <View style={styles.message, { width: '100%', height: 50, position: 'relative' }} >
+        <View style={[styles.message, { width: '100%', height: 50, position: 'relative' }]} >
           <Text style={[GlobalStyles.mediumText, { width: '100%', fontWeight: '300'  }]}>
             Tu n'as pas encore de recettes. Tu peux faire la liste de tes ingrédients dans
           </Text>
