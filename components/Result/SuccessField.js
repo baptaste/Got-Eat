@@ -30,18 +30,18 @@ export default function SuccessField() {
 
       <View style={styles.recipeList}>
         {result?.recipes.map(recipe => (
-          <View key={recipe.id}
+          <View key={recipe._id}
             style={[styles.recipeItem, GlobalStyles.secondBg,
             { shadowColor: colorScheme === 'dark' ? 'turquoise' : '#000' }
             ]}>
 
             <Image
-              source={{ uri: `${baseAPIurl}/${recipe.image}`, width: '100%', height: 200 }}
+              source={{ uri: recipe.image_url, width: '100%', height: 200 }}
               style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, resizeMode: 'cover' }}
             />
 
             <Link
-              to={`/result/${recipe.id}`}
+              to={`/result/${recipe._id}`}
               onPress={() => setRecipe(recipe)}
               style={styles.recipeLink}
             >

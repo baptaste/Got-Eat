@@ -20,7 +20,7 @@ export const isLoadingState = atom({
   default: false
 })
 
-export const hasSubmitState = atom({
-  key: 'hasSubmitState',
+export const hasSubmitRecipeState = atom({
+  key: 'hasSubmitRecipeState',
   default: false
 })

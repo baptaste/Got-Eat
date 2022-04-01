@@ -7,6 +7,7 @@ import Home from '../assets/icons/home-light.png'
 import Recipes from '../assets/icons/recipe-chef.png'
 import Inventory from '../assets/icons/shopping-list.png'
 import Cart from '../assets/icons/shopping-basket.png'
+import User from '../assets/icons/user.png'
 // import Blocks from '../assets/icons/squares-2.png'
 
 import { useRecoilValue } from 'recoil'
@@ -19,14 +20,15 @@ export default function Nav() {
     { path: '/inventory', icon: Inventory, name: 'Inventaire' },
     { path: '/cart', icon: Cart, name: 'Ingrédients' },
     { path: '/result', icon: Recipes, name: 'Recettes' },
+    { path: '/profile', icon: User, name: 'Profil' },
   ]
 
-  const currentLocation = useRecoilValue(currentLocationState)
-  const colorScheme = useRecoilValue(colorSchemeState)
+  const $currentLocation = useRecoilValue(currentLocationState)
+  const $colorScheme = useRecoilValue(colorSchemeState)
 
   return (
     <View style={[styles.nav,
-      { backgroundColor: colorScheme === 'dark' ? GlobalStyles.mainBgDark.backgroundColor : GlobalStyles.mainBgLight.backgroundColor }]}
+      { backgroundColor: $colorScheme === 'dark' ? GlobalStyles.mainBgDark.backgroundColor : GlobalStyles.mainBgLight.backgroundColor }]}
     >
       {routes.map(({ path, icon, name }, index) => (
         <Link
@@ -37,20 +39,20 @@ export default function Nav() {
           <View style={styles.navLink} >
             <Image
               source={icon}
-              style={{ width: 25, height: 25, tintColor: currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
-                // tintColor: colorScheme === 'dark' ?
-                //   currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
-                //   : currentLocation === path ? GlobalStyles.thirdColor.color : 'grey'
+              style={{ width: 25, height: 25, tintColor: $currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
+                // tintColor: $colorScheme === 'dark' ?
+                //   $currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
+                //   : $currentLocation === path ? GlobalStyles.thirdColor.color : 'grey'
               }}
             />
             <Text style={[styles.linkText,
-              { fontWeight: currentLocation === path ? 'bold' : 'normal' },
-              { color: currentLocation === path ?
-                colorScheme === 'dark' ? 'white' : GlobalStyles.mainColorDark.color
+              { fontWeight: $currentLocation === path ? 'bold' : 'normal' },
+              { color: $currentLocation === path ?
+                $colorScheme === 'dark' ? 'white' : GlobalStyles.mainColorDark.color
                 : 'grey' }, ]}
-              // { color: colorScheme === 'dark' ?
-              //   currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
-              //   : currentLocation === path ? GlobalStyles.thirdColor.color : 'grey'
+              // { color: $colorScheme === 'dark' ?
+              //   $currentLocation === path ? GlobalStyles.secondColor.color : 'grey'
+              //   : $currentLocation === path ? GlobalStyles.thirdColor.color : 'grey'
               // }
             >
               {name}

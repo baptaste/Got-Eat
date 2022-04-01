@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, useEffect, Suspense, useRef } from 'react'
 import { StyleSheet, View, Text, ScrollView, Appearance, StatusBar, Dimensions, LogBox } from 'react-native';
-import { NativeRouter, Routes, Route } from "react-router-native";
+import { NativeRouter, Routes, Route, useLocation } from "react-router-native";
 // import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GlobalStyles } from './styles/GlobalStyles';
@@ -8,17 +8,19 @@ import { GlobalStyles } from './styles/GlobalStyles';
 import Consent from './components/Consent'
 import Inventory from './components/Inventory';
 import Ingredients from './components/Ingredients';
-import Submit from './components/Buttons/Submit';
+import Submit from './components/Submit';
 import Result from './components/Result';
 import Nav from './components/Nav';
 import Home from './components/Home';
 import Cart from './components/Cart';
 import Recipe from './components/Recipe';
+import Profile from './components/Profile';
+import Account from './components/Account';
 
 import { RecoilRoot } from 'recoil'
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil'
 import { ingredientsState, userIngredientsState, resultState, currentRecipeState, ingredientsPickedState, categoryState } from './store/atoms/globals'
-import { colorSchemeState, windowHeightState } from './store/atoms/settings';
+import { colorSchemeState, windowHeightState, currentLocationState } from './store/atoms/settings';
 
 export default function RecoilApp() {
   return (
@@ -73,9 +75,8 @@ function App() {
   const [userIngredients, setUserIngredients] = useRecoilState(userIngredientsState)
   const [totalIngredientsPicked, setTotalIngredientsPicked] = useRecoilState(ingredientsPickedState)
 
-  const result = useRecoilValue(resultState)
-  const recipe = useRecoilValue(currentRecipeState)
-  const category = useRecoilValue(categoryState)
+  const $result = useRecoilValue(resultState)
+  const $recipe = useRecoilValue(currentRecipeState)
   // const isLoading = useRecoilValue(isLoadingState)
 
   // update userIngredients recoil's atom
@@ -137,6 +138,12 @@ function App() {
     console.log('ingredientsState :', ingredients);
   }, [ingredients])
 
+  useEffect(() => {
+    console.log('userIngredientsState :', userIngredients);
+  }, [userIngredients])
+
+  //TODO voir pour faire des routes pour les categories plutôt que de la set quand le composant est monté, ça relance un getAll ingredients a chaque fois
+
   return (
     // <LinearGradient
     //     colors={['rgba(0,0,0,1)', 'rgba(37,31,193,1)']}
@@ -149,7 +156,7 @@ function App() {
             styles.container,
             { backgroundColor: colorScheme === 'dark' ? GlobalStyles.mainBgDark.backgroundColor : GlobalStyles.mainBgLight.backgroundColor }]}
         >
-          <View style={[styles.main, { minHeight: windowHeight }]}>
+          <View style={[styles.main, { minHeight: windowHeight }]} >
 
             <Routes>
               <Route exact path='/'
@@ -165,18 +172,32 @@ function App() {
                   </>
                 }
               />
-              <Route exact path='/inventory' element={ <Inventory /> }/>
+              <Route exact path='/inventory'
+                element={
+                  <Suspense fallback={<Text>loading...</Text>}>
+                    <Inventory />
+                  </Suspense>
+                }
+              />
               <Route exact path='/inventory/ingredients' element={ <Ingredients handleIngredientPick={handleIngredientPick} /> } />
-              <Route exact path='/cart' element={ <Cart handleIngredientPick={handleIngredientPick} /> } />
+              <Route exact path='/cart'
+                element={
+                  <Suspense fallback={<Text>loading...</Text>}>
+                    <Cart handleIngredientPick={handleIngredientPick} />
+                  </Suspense>
+                }
+              />
               <Route exact path='/result' element={ <Result /> } />
-              <Route exact path='/result/:id' element={ recipe && <Recipe /> } />
+              <Route exact path='/result/:id' element={ $recipe && <Recipe /> } />
+              <Route exact path='/profile' element={ <Profile /> } />
+              <Route exact path='/account' element={ <Account /> } />
             </Routes>
 
           </View>
           <StatusBar style="auto" />
         </ScrollView>
 
-        {(result === null && totalIngredientsPicked >= 3) &&
+        {($result === null && totalIngredientsPicked >= 3) &&
           <Suspense fallback={<Text>Chargement</Text>}>
             <Submit />
           </Suspense>

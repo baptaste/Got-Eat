@@ -12,7 +12,7 @@ export default function ResultArea() {
 
   return (
     <View style={{ width: '100%', alignItems: 'center', padding: 16, }}>
-      { result?.status === 'Error' ? <ErrorField /> : <SuccessField /> }
+      { result?.success ? <SuccessField /> : <ErrorField /> }
     </View>
   )
 }

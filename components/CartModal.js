@@ -1,27 +1,27 @@
 import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
-import Undo from './Buttons/Undo'
+import UndoBtn from './Buttons/UndoBtn'
 import Close from '../assets/icons/cancel.png'
 import { useRecoilValue } from 'recoil'
 import { userIngredientsState } from '../store/atoms/globals'
 
 export default function CartModal({ clearState, handleCartButtonPress, colorScheme }) {
 
-  const userIngredients = useRecoilValue(userIngredientsState)
+  const $userIngredients = useRecoilValue(userIngredientsState)
 
   return (
        <View style={[styles.cartBlock, GlobalStyles.fifthBg]}>
 
        <Text style={[ GlobalStyles.bigText, GlobalStyles.textBold, { color: GlobalStyles.secondColor.color }]}>
-         {userIngredients.length >= 3 ?
-           `${userIngredients.length - 2} ${(userIngredients.length - 2) > 1 ? 'sélectionnés' : 'sélectionné'}`
+         {$userIngredients.length >= 3 ?
+           `${$userIngredients.length - 2} ${($userIngredients.length - 2) > 1 ? 'sélectionnés' : 'sélectionné'}`
            : 'Les essentiels'
          }
        </Text>
 
        <View style={[GlobalStyles.row, styles.cartList]}>
-         {userIngredients.map((ingredient, index) =>
+         {$userIngredients.map((ingredient, index) =>
            <Text
              key={ingredient.value}
              style={[
@@ -44,8 +44,8 @@ export default function CartModal({ clearState, handleCartButtonPress, colorSche
          />
        </TouchableOpacity>
 
-       {userIngredients.length >= 3 &&
-         <Undo colorScheme={colorScheme} marginTop={32}
+       {$userIngredients.length >= 3 &&
+         <UndoBtn colorScheme={colorScheme} marginTop={32}
        />}
 
      </View>

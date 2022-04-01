@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, Image } from 'react-native'
 import { Link, useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
+import axios from 'axios'
 
 import { useSetRecoilState, useRecoilValue } from 'recoil'
 import { currentLocationState, colorSchemeState, windowHeightState } from '../store/atoms/settings'
@@ -10,7 +11,7 @@ export default function Home() {
 
   const { pathname } = useLocation()
   const setCurrentLocation = useSetRecoilState(currentLocationState)
-  const colorScheme = useRecoilValue(colorSchemeState)
+  const $colorScheme = useRecoilValue(colorSchemeState)
   const windowHeight = useRecoilValue(windowHeightState)
 
   useEffect(() => {
@@ -18,12 +19,8 @@ export default function Home() {
   }, [])
 
   return (
-    // <View style={{ height: windowHeight - 110 }}>
+
     <View>
-      {/* <Text style={[GlobalStyles.hugeText]}>Safeood</Text>
-      <Text style={[GlobalStyles.hugeText]}>SaveFood</Text>
-      <Text style={[GlobalStyles.hugeText]}>SaveCook</Text> */}
-      {/* <Text style={[GlobalStyles.hugeText]}>Cookook</Text> */}
 
       <View style={styles.appName}>
         <Text style={[{ fontSize: 30, fontWeight: '700', color: GlobalStyles.secondColor.color }]}>
@@ -36,7 +33,7 @@ export default function Home() {
 
       <View style={styles.contentArea}>
 
-        <Link to='/inventory' style={[styles.contentItem, GlobalStyles.secondBg, { shadowColor: colorScheme === 'dark' ? '#ddd' : 'black' }]} >
+        <Link to='/inventory' style={[styles.contentItem, GlobalStyles.secondBg, { shadowColor: $colorScheme === 'dark' ? '#ddd' : 'black' }]} >
           <>
             <Text style={[GlobalStyles.bigText, { color: '#252627' }]}>Trouver ma recette</Text>
             <Text style={[GlobalStyles.mediumText, { width: '80%', color: '#252627' }]}>
@@ -45,7 +42,7 @@ export default function Home() {
           </>
         </Link>
 
-        <Link to='/cart' style={[styles.contentItem, GlobalStyles.fourthBg, { shadowColor: colorScheme === 'dark' ? 'grey' : 'black' }]} >
+        <Link to='/cart' style={[styles.contentItem, GlobalStyles.fourthBg, { shadowColor: $colorScheme === 'dark' ? 'grey' : 'black' }]} >
           <>
             <Text style={[GlobalStyles.bigText, { color: '#252627' }]}>Ma liste d'ingrédients</Text>
             <Text style={[GlobalStyles.mediumText, { width: '80%' }]}>
@@ -55,7 +52,7 @@ export default function Home() {
         </Link>
 
         <Link to='/result' style={[styles.contentItem,
-          { backgroundColor: colorScheme === 'dark' ? '' : GlobalStyles.mainBgDark.backgroundColor, shadowColor: colorScheme === 'dark' ? 'grey' : 'black' }]}>
+          { backgroundColor: $colorScheme === 'dark' ? '' : GlobalStyles.mainBgDark.backgroundColor, shadowColor: $colorScheme === 'dark' ? 'grey' : 'black' }]}>
           <>
             <Text style={[GlobalStyles.bigText, GlobalStyles.whiteText]}>Mon carnet perso</Text>
             <Text style={[GlobalStyles.mediumText, GlobalStyles.whiteText, { width: '80%' }]}>

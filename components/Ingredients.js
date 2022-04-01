@@ -10,10 +10,10 @@ import { currentLocationState, colorSchemeState, windowHeightState } from '../st
 
 export default function Ingredients({ handleIngredientPick }) {
 
-  const category = useRecoilValue(categoryState)
-  const ingredients = useRecoilValue(ingredientsState)
-  const userIngredients = useRecoilValue(userIngredientsState)
-  const colorScheme = useRecoilValue(colorSchemeState)
+  const $category = useRecoilValue(categoryState)
+  const $ingredients = useRecoilValue(ingredientsState)
+  const $userIngredients = useRecoilValue(userIngredientsState)
+  const $colorScheme = useRecoilValue(colorSchemeState)
   const windowHeight = useRecoilValue(windowHeightState)
 
   const { pathname } = useLocation()
@@ -27,9 +27,9 @@ export default function Ingredients({ handleIngredientPick }) {
     // <View style={{ height: windowHeight - 100 }}>
     <View style={{ flex: 1 }}>
 
-      <PageHead title={category.question !== null && category.question} />
+      <PageHead title={$category.title !== null && $category.title} />
 
-      {ingredients[category.name].length >= 1 &&
+      {$ingredients[$category.name].length >= 1 &&
         <Link
           to='/inventory'
           style={styles.validate}
@@ -42,31 +42,31 @@ export default function Ingredients({ handleIngredientPick }) {
 
       <View style={styles.ingredientsList}>
 
-        {category.options.map((option, index) => (
+        {$category.ingredients.map((ingredient, index) => (
           <TouchableOpacity
-            onPress={() => handleIngredientPick(category.name, category.boolean.name, option)}
-            key={option.value}
+            onPress={() => handleIngredientPick($category.name, $category.boolean, ingredient)}
+            key={ingredient._id}
             style={styles.ingredient}
-            // disabled={ingredientsPicked.includes(option.value)}
+            // disabled={ingredientsPicked.includes(ingredient.value)}
           >
               <Image
-                source={option.image}
-                accessibilityLabel={option.value}
-                style={{width: 40, height: 40, marginBottom: 10}}
-                tintColor={colorScheme === 'dark' ?
-                  userIngredients.includes(option) ? GlobalStyles.secondColor.color : 'white' // dark mode
-                  : userIngredients.includes(option) ? GlobalStyles.secondColor.color : 'black' // light mode
+                source={{ uri: ingredient.image_url, width: 40, height: 40 }}
+                accessibilityLabel={ingredient.value}
+                style={{ marginBottom: 10 }}
+                tintColor={$colorScheme === 'dark' ?
+                  $userIngredients.includes(ingredient) ? GlobalStyles.secondColor.color : 'white' // dark mode
+                  : $userIngredients.includes(ingredient) ? GlobalStyles.secondColor.color : 'black' // light mode
               }
               />
 
               <Text style={
-                userIngredients.includes(option) ?
+                $userIngredients.includes(ingredient) ?
                 [GlobalStyles.smallText, GlobalStyles.textBold, GlobalStyles.textCenter, styles.picked]
-                  // { color: colorScheme === 'dark' ? '' : '#251fc1' }]
+                  // { color: $colorScheme === 'dark' ? '' : '#251fc1' }]
                 : [GlobalStyles.smallText, GlobalStyles.textBold, GlobalStyles.textCenter, { color: 'black' }]
               }
               >
-                {option.value}
+                {ingredient.value}
               </Text>
 
           </TouchableOpacity>

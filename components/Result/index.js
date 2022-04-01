@@ -5,7 +5,7 @@ import { GlobalStyles } from '../../styles/GlobalStyles'
 
 import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil'
 import { resultState, foundRecipeListState, ingredientsState, userIngredientsState } from '../../store/atoms/globals'
-import { currentLocationState, colorSchemeState, hasSubmitState } from '../../store/atoms/settings'
+import { currentLocationState, colorSchemeState, hasSubmitRecipeState } from '../../store/atoms/settings'
 
 import PageHead from '../PageHead'
 import ResultArea from './ResultArea'
@@ -18,7 +18,7 @@ export default function Result() {
   // const colorScheme = useRecoilValue(colorSchemeState)
   const setCurrentLocation = useSetRecoilState(currentLocationState)
   const foundRecipeList = useRecoilValue(foundRecipeListState)
-  const resetHasSubmit = useResetRecoilState(hasSubmitState)
+  const resetHasSubmit = useResetRecoilState(hasSubmitRecipeState)
 
   useEffect(() => {
     setCurrentLocation(pathname)

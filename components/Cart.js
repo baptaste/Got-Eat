@@ -3,99 +3,99 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native'
 import { useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import PageHead from '../components/PageHead'
-import Undo from './Buttons/Undo'
+import UndoBtn from './Buttons/UndoBtn'
 
 import { useRecoilValue, useSetRecoilState } from 'recoil'
-import { dataItemsState, userIngredientsState, categoryState } from '../store/atoms/globals'
+import { userIngredientsState, categoryState } from '../store/atoms/globals'
 import { currentLocationState, colorSchemeState } from '../store/atoms/settings'
+import { categoryListQueryState } from '../store/selectors/getRequests'
 
-import AddMore from './Buttons/AddMore'
+import AddMoreLink from './Links/AddMoreLink'
 
 import RemoveIcon from '../assets/icons/minus.png'
 
 export default function Cart({ handleIngredientPick }) {
 
-  const storeDataItems = useRecoilValue(dataItemsState)
-  const userIngredients = useRecoilValue(userIngredientsState)
+  const $categoryList = useRecoilValue(categoryListQueryState)
+
+  const $userIngredients = useRecoilValue(userIngredientsState)
   // const storeIngredients = useRecoilValue(ingredientsState)
-  const colorScheme = useRecoilValue(colorSchemeState)
+  const $colorScheme = useRecoilValue(colorSchemeState)
 
   const { pathname } = useLocation()
   const setCurrentLocation = useSetRecoilState(currentLocationState)
 
-  const [filteredIngredients, setFilteredIngredients] = useState([])
+  const [filteredCategoryList, setFilteredCategoryList] = useState([])
   const setCategory = useSetRecoilState(categoryState)
 
-  const getFilteredIngredients = () => {
-    // let deepDataItemsCopy = _.cloneDeep(storeDataItems)
-    let deepDataItemsCopy = JSON.parse(JSON.stringify(storeDataItems))
+  const getFilteredCategoryList = () => {
+    let deepCategoryListCopy = JSON.parse(JSON.stringify($categoryList))
 
-    deepDataItemsCopy = deepDataItemsCopy.filter(category => {
+    deepCategoryListCopy = deepCategoryListCopy.filter(category => {
       const matchingCategories = []
 
-      userIngredients.forEach(ingredient => {
+      $userIngredients.forEach(ingredient => {
         if (category.name === ingredient.name) matchingCategories.push(category)
       })
 
-      if (matchingCategories.length !== 0) return matchingCategories
+      if (matchingCategories.length) return matchingCategories
     })
 
-    deepDataItemsCopy = deepDataItemsCopy.filter(category => {
+    deepCategoryListCopy = deepCategoryListCopy.filter(category => {
       const matchingIngredients = []
 
-      category.options.map(option => {
-        userIngredients.forEach(ingredient => {
-          if (option.value === ingredient.value) matchingIngredients.push(ingredient)
+      category.ingredients.map(categoryIngredient => {
+        $userIngredients.forEach(userIngredient => {
+          if (categoryIngredient.value === userIngredient.value) matchingIngredients.push(userIngredient)
         })
       })
 
-      category.options = matchingIngredients
+      category.ingredients = matchingIngredients
       return matchingIngredients
     })
 
-    setFilteredIngredients(deepDataItemsCopy)
+    setFilteredCategoryList(deepCategoryListCopy)
   }
 
-  const handleAddMoreIngredients = (ingredientsCategory) => {
-    const foundCategory = storeDataItems.find(category => category.name === ingredientsCategory.name)
+  const handleAddMoreIngredients = (targetCategory) => {
+    const foundCategory = $categoryList.find(category => category.name === targetCategory.name)
     setCategory(foundCategory)
   }
 
   const [ingredientPressed, setIngredientPressed] = useState(null)
 
   const handleRemoveIngredient = () => {
-    let newFilteredIngredients = JSON.parse(JSON.stringify(filteredIngredients))
+    let newFilteredCategoryList = JSON.parse(JSON.stringify(filteredCategoryList))
 
-    newFilteredIngredients = newFilteredIngredients.filter(category => {
-      category.options = category.options.map(ingredient => {
+    newFilteredCategoryList = newFilteredCategoryList.filter(category => {
+      category.ingredients = category.ingredients.map(ingredient => {
         if (ingredient.value !== ingredientPressed.value) {
           return typeof ingredient === 'object' && ingredient !== undefined && ingredient
         }
       })
-      if (category.options.length !== 0 && !category.options.includes(undefined)) {
+      if (category.ingredients.length && !category.ingredients.includes(undefined)) {
         return category
       }
     })
 
     let targetBoolean = null
 
-    filteredIngredients.map(obj => {
-      obj.options.find(ing => {
-       if (ing === ingredientPressed) {
-        targetBoolean = obj.boolean.name
+    filteredCategoryList.map(category => {
+      category.ingredients.find(ingredient => {
+       if (ingredient === ingredientPressed) {
+        targetBoolean = category.boolean
        }
       })
     })
 
     handleIngredientPick(ingredientPressed.name, targetBoolean, ingredientPressed)
-    setFilteredIngredients(newFilteredIngredients)
+    setFilteredCategoryList(newFilteredCategoryList)
   }
 
   useEffect(() => {
     setCurrentLocation(pathname)
-    getFilteredIngredients()
-  }, [userIngredients])
-
+    getFilteredCategoryList()
+  }, [$userIngredients])
 
   return (
 
@@ -103,18 +103,18 @@ export default function Cart({ handleIngredientPick }) {
       <PageHead title='Mes ingrédients' />
 
       <Text style={[GlobalStyles.bigText, GlobalStyles.textBold, GlobalStyles.textCenter, { marginVertical: 16, color: 'grey' }]}>
-        {`${userIngredients.length - 2} ${(userIngredients.length - 2) > 1 ? 'sélectionnés' : 'sélectionné'}` }
+        {`${$userIngredients.length - 2} ${($userIngredients.length - 2) > 1 ? 'sélectionnés' : 'sélectionné'}` }
       </Text>
 
-      {userIngredients.length >= 3 &&
-        <Undo marginTop={10}
+      {$userIngredients.length >= 3 &&
+        <UndoBtn marginTop={10}
       />}
 
 
       <View style={{ marginVertical: 20 }}>
         <Text style={[GlobalStyles.whiteText, GlobalStyles.hugeText, styles.category]}>Les essentiels</Text>
         <View style={[styles.ingredientsList]}>
-          {userIngredients.map(ingredient => ingredient.name === 'default' && (
+          {$userIngredients.map(ingredient => ingredient.name === 'default' && (
             <View
               key={ingredient.value}
               style={styles.ingredient}
@@ -123,9 +123,9 @@ export default function Cart({ handleIngredientPick }) {
                 source={ingredient.image}
                 accessibilityLabel={ingredient.value}
                 style={{ width: 40, height: 40, marginBottom: 10 }}
-                tintColor={colorScheme === 'dark' ? 'white' : 'black'}
+                tintColor={$colorScheme === 'dark' ? 'white' : 'black'}
               />
-              <Text style={[GlobalStyles.smallText, GlobalStyles.textBold, GlobalStyles.textCenter, { color: colorScheme === 'dark' ? 'white' : 'black' }]}>
+              <Text style={[GlobalStyles.smallText, GlobalStyles.textBold, GlobalStyles.textCenter, { color: $colorScheme === 'dark' ? 'white' : 'black' }]}>
                 {ingredient.value}
               </Text>
             </View>
@@ -133,18 +133,18 @@ export default function Cart({ handleIngredientPick }) {
         </View>
       </View>
 
-      {filteredIngredients.map(item => (
-        <View key={item.id} style={{ marginBottom: 20 }}>
+      {filteredCategoryList.map(category => (
+        <View key={category._id} style={{ marginBottom: 20 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={[GlobalStyles.whiteText, GlobalStyles.hugeText, styles.category]}>
-              {item.label}
+              {category.title}
             </Text>
-            <AddMore propsFunction={() => handleAddMoreIngredients(item)} path='/inventory/ingredients' />
+            <AddMoreLink action={() => handleAddMoreIngredients(category)} path='/inventory/ingredients' />
           </View>
 
 
           <View style={[styles.ingredientsList]}>
-            {item.options.map(ingredient => {
+            {category.ingredients.map(ingredient => {
               // console.log('ingredient dans le map de Cart', ingredient);
               return (
                 <TouchableOpacity
@@ -153,14 +153,14 @@ export default function Cart({ handleIngredientPick }) {
                   onLongPress={() => setIngredientPressed(ingredient)}
                 >
                   <Image
-                    source={ingredient.image}
+                    source={{ uri: ingredient.image_url }}
                     accessibilityLabel={ingredient.value}
                     style={{ width: 40, height: 40, marginBottom: 10 }}
-                    tintColor={colorScheme === 'dark' ? 'white' : 'black'}
+                    tintColor={$colorScheme === 'dark' ? 'white' : 'black'}
                   />
                   <Text
                     style={[GlobalStyles.smallText, GlobalStyles.textBold, GlobalStyles.textCenter,
-                    { color: colorScheme === 'dark' ? 'white' : 'black' }]}
+                    { color: $colorScheme === 'dark' ? 'white' : 'black' }]}
                   >
                     {ingredient.value}
                   </Text>

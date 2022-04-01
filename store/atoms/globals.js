@@ -1,11 +1,12 @@
 import { atom } from 'recoil'
 import data from '../../data'
-import Salt from '../../assets/icons/salt.png'
-import Pepper from '../../assets/icons/pepper.png'
+import Salt from '../../assets/icons/ingredients/salt.png'
+import Pepper from '../../assets/icons/ingredients/pepper.png'
 
 export const dataItemsState = atom({
   key: 'dataItemsState',
-  default: data
+  default: []
+  // default: data
 })
 
 export const ingredientsState = atom({

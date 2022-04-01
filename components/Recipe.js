@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { useLocation } from 'react-router-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
-import GoBack from './Buttons/GoBack'
+import GoBackBtn from './Buttons/GoBackBtn'
 
 import { useRecoilValue, useSetRecoilState, useResetRecoilState, useRecoilState } from 'recoil'
 import { currentRecipeState, foundRecipeListState, resultState } from '../store/atoms/globals'
@@ -61,11 +61,18 @@ export default function Recipe() {
   return (
     <>
       <View style={styles.head}>
-        <GoBack />
+        <GoBackBtn />
 
-        <Text style={[GlobalStyles.hugeText, GlobalStyles.textCenter]}>
-          {recipe.name}
-        </Text>
+        <View style={styles.headTitle}>
+          <Text style={[GlobalStyles.hugeText, GlobalStyles.textCenter]}>
+            {recipe.name}
+          </Text>
+            {recipe.origin &&
+              <Text style={[GlobalStyles.mediumText, GlobalStyles.textCenter, { color: 'grey' }]}>
+                (Version {recipe.origin.toLowerCase()})
+              </Text>
+            }
+        </View>
       </View>
 
       {/* <TouchableOpacity style={{ backgroundColor: 'green' }}
@@ -79,10 +86,10 @@ export default function Recipe() {
       </Text>
 
       <View style={styles.ingredients}>
-        {recipe.ingredients.map((text, index) => (
-          <View  key={text + index} style={styles.ingredientItem}>
-            <Text key={text} style={[styles.ingredientText, GlobalStyles.mediumText, GlobalStyles.textBold, { color: 'black' }]}>
-              {text}
+        {recipe.ingredients.map((recipe) => (
+          <View  key={recipe._id} style={styles.ingredientItem}>
+            <Text style={[styles.ingredientText, GlobalStyles.mediumText, GlobalStyles.textBold, { color: 'black' }]}>
+              {recipe.value}
             </Text>
           </View>
         ))}
@@ -114,6 +121,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16
+  },
+  headTitle: {
+    alignItems: 'flex-start'
   },
   ingredients: {
     flexDirection: 'row',

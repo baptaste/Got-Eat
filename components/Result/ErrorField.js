@@ -7,6 +7,8 @@ import { useResetRecoilState, useRecoilValue } from 'recoil'
 import { resultState, ingredientsState, userIngredientsState } from '../../store/atoms/globals'
 
 import NoFood from '../../assets/images/no-food.png'
+import DefaultBtn from '../Buttons/DefaultBtn'
+import DefaultLink from '../Links/DefaultLink'
 
 export default function ErrorField() {
 
@@ -28,31 +30,13 @@ export default function ErrorField() {
         </Text>
         <Image source={NoFood} style={{ width: 150, height: 150, marginVertical: 32 }} />
         <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-around' }}>
-          <TouchableOpacity onPress={resetStates}
-            style={[styles.retryButton, { borderColor: 'black' }]}>
-            <Text style={[GlobalStyles.textBold, { color: 'black' }]}>Cacher</Text>
-          </TouchableOpacity>
-          <Link
-            to='/inventory'
-            onPress={resetStates}
-            style={styles.retryButton}
-          >
-            <Text style={[GlobalStyles.textBold, GlobalStyles.secondColor]}>Je refais mon inventaire</Text>
-          </Link>
+          <DefaultBtn action={resetStates} text='Cacher' />
+          <DefaultLink path='/inventory' action={resetStates} text='Je refais mon inventaire' />
         </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  retryButton: {
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 25,
-    marginVertical: 16,
-    borderRadius: 20,
-    borderWidth: 1.5,
-    borderColor: GlobalStyles.secondBg.backgroundColor
-  }
+
 })

@@ -1,13 +1,13 @@
 import React from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { GlobalStyles } from '../styles/GlobalStyles'
-import GoBack from './Buttons/GoBack'
+import GoBackBtn from './Buttons/GoBackBtn'
 
 export default function PageHead({ title }) {
 
   return (
     <View style={styles.head}>
-      <GoBack />
+      <GoBackBtn />
 
       <Text style={[GlobalStyles.hugeText, GlobalStyles.textCenter]}>
         {title}
